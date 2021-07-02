@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SignIn extends StatelessWidget {
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int part = 10;
@@ -11,16 +11,11 @@ class SignIn extends StatelessWidget {
     var data = "Tuesday";
     const pi = 3.14;
     final list = ["sd"];
-    var appTitles = "Awesome App";
+    var appTitles = "Home";
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.ac_unit),
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          onPressed: () {},
-        ),
-        title: Text(appTitles),      
+        title: Text(appTitles),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.headphones)),
           IconButton(onPressed: () {}, icon: Icon(Icons.access_alarm_rounded)),
@@ -34,6 +29,12 @@ class SignIn extends StatelessWidget {
             },
           ),
         ],
+      ),
+      drawer: Drawer(),
+      body: Center(
+        child: Container(
+          child: Text("Welcome in Awesome App"),
+        ),
       ),
     );
   }
