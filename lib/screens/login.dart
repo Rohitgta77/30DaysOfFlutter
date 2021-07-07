@@ -6,17 +6,19 @@ class LogIn extends StatelessWidget {
     var appTitles = "Login";
 
     return Material(
-      child: Center(
-        child: Container(
-          child: Text(
-            "Login Screen",
-            style: TextStyle(
-              color: Colors.blue,
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-            ),
+      color: Colors.white,
+      child: Column(
+        children: [
+          Image.asset(
+            "assets/images/login.png",
           ),
-        ),
+          Text(
+            "Welcome",
+            style: TextStyle(
+              fontSize: 24,
+            ),
+          )
+        ],
       ),
     );
   }
