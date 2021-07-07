@@ -6,17 +6,45 @@ class LogIn extends StatelessWidget {
     var appTitles = "Login";
 
     return Material(
-      child: Center(
-        child: Container(
-          child: Text(
-            "Login Screen",
+      color: Colors.white,
+      child: Column(
+        children: [
+          Image.asset(
+            "assets/images/login.png",
+          ),
+          Text(
+            "Welcome",
             style: TextStyle(
-              color: Colors.blue,
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
+              fontSize: 24,
             ),
           ),
-        ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                      hintText: "Enter UserName", labelText: "UserName"),
+                ),
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      hintText: "Enter Password", labelText: "Password"),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                ElevatedButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(),
+                    child: Text("Login"))
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
