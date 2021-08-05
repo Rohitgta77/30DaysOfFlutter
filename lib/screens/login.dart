@@ -1,74 +1,140 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/utils/routes.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_catalog/constants/colorsConstants.dart';
+import 'package:flutter_catalog/helper/dbhelper.dart';
+import 'package:flutter_catalog/utils/snapPeNetworks.dart';
+import 'package:flutter_catalog/utils/snapPeRoutes.dart';
+import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:flutter_catalog/utils/snapPeUtil.dart';
 
-class LogIn extends StatelessWidget {
+import 'otp.dart';
+
+class LogIn extends StatefulWidget {
+  @override
+  _LogInState createState() => _LogInState();
+}
+
+class _LogInState extends State<LogIn> {
+  bool _isLogin = false;
+  //final _fromKey = GlobalKey()
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLogin();
+    print(_isLogin);
+  }
+
+  _checkLogin() async {
+    _isLogin = await SnapPeUtils().checkLogin();
+    print("Is Login - $_isLogin");
+    if (_isLogin) {
+      print("home");
+      Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
+    }
+    // print("Is Login - $_isLogin");
+    // setState(() {});
+  }
+
+  void insertdata() async {
+    Map<String, dynamic> row = {
+      DataBaseHelper.cUserName: "Rohit Gupta",
+      DataBaseHelper.cUserID: 10
+    };
+    final id = await DataBaseHelper.instance.insert(row);
+    print(id);
+  }
+
+  final _mobileController = TextEditingController();
+
+  _btnGetOTP() async {
+    var mobile = "91" + _mobileController.text;
+
+    //var signature = await SmsAutoFill().getAppSignature;
+    var signature = ""; //test
+    print("AppSignature : $signature");
+
+    if (await SnapPeNetworks().requestOTP(mobile, signature)) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Otp(
+                    mobileNumber: mobile,
+                  )));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Authentication Error.."),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var appTitles = "Login";
-
-    return Material(
-      color: Colors.white,
-      child: SafeArea(
+    return Scaffold(
+      appBar: SnapPeUI().AppBarBig(),
+      body: Container(
+        height: double.infinity,
         child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 120.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 50),
-              Center(
-                child: Image.asset(
-                  "assets/images/snappe.png",
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  "Sign In / Sign Up",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  "Hi there! Nice to see you again.",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 15, color: Colors.grey),
-                ),
-              ),
+              SnapPeUI().headingSubheadingText(
+                  "Sign In / Sign Up", "Hi there! Nice to see you again."),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 30, horizontal: 32),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                          hintText: "Enter Phone Number", labelText: "Phone"),
-                    ),
-                    SizedBox(height: 30),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all(Size(250, 40))),
-                      onPressed: () {
-                        Navigator.pushNamed(context, MyRoutes.homeRoute);
-                      },
-                      child: Text(
-                        "Get OTP",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                child: Form(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _mobileController,
+                        keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.phone_android),
+                            errorMaxLines: 10,
+                            prefix: Text("+91  "),
+                            hintText: "Enter Phone Number",
+                            labelText: "Phone"),
+                        validator: (value) {
+                          if (value != null && value.length < 10) {
+                            return "Please Enter Valid Phone Number.";
+                          }
+                        },
                       ),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      "Have an Password ?",
-                    ),
-                    TextButton(onPressed: () {}, child: Text("Sign In")),
-                  ],
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                            fixedSize:
+                                MaterialStateProperty.all(Size(250, 40))),
+                        onPressed: () {
+                          _btnGetOTP(); //test
+                        },
+                        child: SnapPeUI().appBarText("Get OTP", 15),
+                      ),
+                      SizedBox(height: 30),
+                      RichText(
+                          text: TextSpan(
+                        children: [
+                          TextSpan(
+                              text: "Have an Password ? ",
+                              style: TextStyle(color: kLightTextColor)),
+                          TextSpan(
+                              text: "Sign In",
+                              style: TextStyle(color: kLinkTextColor),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushNamed(
+                                      context, SnapPeRoutes.loginWithPwdRoute);
+                                  print("sign In button press.");
+                                })
+                        ],
+                      )),
+                    ],
+                  ),
                 ),
               )
             ],

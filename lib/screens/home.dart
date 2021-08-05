@@ -1,41 +1,66 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_catalog/constants/colorsConstants.dart';
+import 'package:flutter_catalog/models/catalogueModel.dart';
+import 'package:flutter_catalog/screens/liveAgentScreen.dart';
+import 'package:flutter_catalog/screens/orderScreen.dart';
+import 'package:flutter_catalog/screens/paymentScreen.dart';
+import 'package:flutter_catalog/screens/profileScreen.dart';
+import 'package:flutter_catalog/utils/snapPeUI.dart';
 
-class Home extends StatelessWidget {
+import 'catalogueScreen.dart';
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int _screenIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    int part = 10;
-    String name = "Fd";
-    double price = 3.14;
-    bool isChecked = true;
-    num temp = 30.5; //30 or 30.5
-    var data = "Tuesday";
-    const pi = 3.14;
-    final list = ["sd"];
-    var appTitles = "Home";
+    var screens = [
+      CatalogueScreen(),
+      OrderScreen(),
+      LiveAgentScreen(),
+      PaymentScreen(),
+      ProfileScreen(),
+    ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(appTitles),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.headphones)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.access_alarm_rounded)),
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(child: Text("Profile")),
-                PopupMenuItem(child: Text("Wallets")),
-                PopupMenuItem(child: Text("Setting"))
-              ];
-            },
-          ),
-        ],
-      ),
+      appBar: SnapPeUI().AppBarSmall(),
       drawer: Drawer(),
-      body: Center(
-        child: Container(
-          child: Text("Welcome in Awesome App"),
-        ),
+      body: screens[_screenIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _screenIndex,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: kPrimaryColor,
+        selectedFontSize: 15,
+        iconSize: 28,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        onTap: (value) => {
+          setState(() {
+            _screenIndex = value;
+          })
+        },
+        items: SnapPeUI().customButtomNavigation(),
       ),
     );
+
+    // WillPopScope(
+    //   child:
+    //   onWillPop: () async {
+    //     exit(0);
+    //   },
+    // );
   }
 }
