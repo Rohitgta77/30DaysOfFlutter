@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart';
 import 'package:flutter_catalog/screens/liveAgentScreen.dart';
 import 'package:flutter_catalog/screens/orderScreen.dart';
 import 'package:flutter_catalog/screens/paymentScreen.dart';
@@ -39,6 +35,7 @@ class _HomeState extends State<Home> {
       appBar: SnapPeUI().AppBarSmall(),
       drawer: Drawer(),
       body: screens[_screenIndex],
+      
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _screenIndex,
         unselectedItemColor: Colors.grey,

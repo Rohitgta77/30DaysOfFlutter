@@ -22,9 +22,9 @@ class _ItemWidgetState extends State<ItemWidget> {
         leading: SizedBox(
           width: 50,
           height: 50,
-          child: Image.network(
-            widget.item.images[0].imageUrl,
-          ),
+          child: widget.item.images.length == 0
+              ? Image.asset("assets/images/noImage.png")
+              : Image.network(widget.item.images[0].imageUrl),
         ),
         title: Text(widget.item.displayName),
         subtitle: Text(widget.item.subTitle),
@@ -48,7 +48,6 @@ class _ItemWidgetState extends State<ItemWidget> {
           ),
         ),
         onTap: () {
-          
           Navigator.push(
               context,
               MaterialPageRoute(

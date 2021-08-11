@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_catalog/models/catalogueModel.dart';
 import 'package:flutter_catalog/utils/snapPeUtil.dart';
@@ -32,7 +31,7 @@ class SnapPeNetworks {
     print('Request OTP URL: $url');
     print('Resquest Body: $reqBody');
     print('Response status: ${response.statusCode}');
-    print(' ${response.body}');
+    print('${response.body}');
     if (response.statusCode == 200) {
       _saveUserInfo(response);
       return true;
@@ -87,7 +86,7 @@ class SnapPeNetworks {
     }
   }
 
-  Future<String> getItemList(BuildContext context) async {
+  Future<String> getItemList(BuildContext context, int page, int size) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
@@ -95,21 +94,21 @@ class SnapPeNetworks {
     if (clientGroupName == null) {
       MotionToast.error(
         title: "Error",
-        description: "you esm",
+        description: "Something Wrong.",
         layoutOrientation: ORIENTATION.RTL,
         animationType: ANIMATION.FROM_RIGHT,
         width: 300,
       ).show(context);
       return "";
     }
-    Uri url = NetworkConstants.getItems(clientGroupName, 0, 15);
+    Uri url = NetworkConstants.getItems(clientGroupName, page, size);
 
     var response = await http.get(url,
         headers: {"Content-Type": "application/json", "token": "$token"});
 
     print('Request getItemList: $url');
     print('Response status: ${response.statusCode}');
-    print(' ${response.body}');
+    //print(' ${response.body}');
 
     if (response.statusCode == 200) {
       return response.body;
@@ -118,7 +117,7 @@ class SnapPeNetworks {
     }
   }
 
-  Future saveItem(BuildContext context, String itemId, Item item) async {
+  Future saveItem(BuildContext context, Item item) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
@@ -126,25 +125,63 @@ class SnapPeNetworks {
     if (clientGroupName == null) {
       MotionToast.error(
         title: "Error",
-        description: "you esm",
+        description: "Something Wrong.",
         layoutOrientation: ORIENTATION.RTL,
         animationType: ANIMATION.FROM_RIGHT,
         width: 300,
       ).show(context);
       return "";
     }
-    Uri url = NetworkConstants.updateItem(clientGroupName, itemId);
+    Uri url = NetworkConstants.updateItem(clientGroupName, item.id.toString());
 
-    var response = await http.put(
-      url,
-      headers: {"Content-Type": "application/json", "token": "$token"},
-    ); //body:
+    final resbody = jsonEncode(item);
+    var response = await http.put(url,
+        headers: {"Content-Type": "application/json", "token": "$token"},
+        body: resbody);
 
     print('Request getItemList: $url');
     print('Response status: ${response.statusCode}');
-    print(' ${response.body}');
+    //print(' ${response.body}');
 
     if (response.statusCode == 200) {
+      MotionToast.success(
+        title: "Saved",
+        description: "your items edited successfully. ",
+        layoutOrientation: ORIENTATION.RTL,
+        animationType: ANIMATION.FROM_RIGHT,
+        width: 300,
+      ).show(context);
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future getCategory(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      MotionToast.error(
+        title: "Error",
+        description: "Something Wrong.",
+        layoutOrientation: ORIENTATION.RTL,
+        animationType: ANIMATION.FROM_RIGHT,
+        width: 300,
+      ).show(context);
+      return "";
+    }
+    Uri url = NetworkConstants.getCategory(clientGroupName);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getItemList: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {      
       return response.body;
     } else {
       return "";

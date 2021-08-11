@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart';
+import 'package:flutter_catalog/models/catalogueModel.dart' as catalogueModel;
 import 'package:flutter_catalog/screens/demo.dart';
+import 'package:flutter_catalog/utils/snapPeNetworks.dart';
 import 'package:flutter_catalog/utils/snapPeRoutes.dart';
 import 'package:flutter_catalog/utils/snapPeUI.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
-  final Item item;
+  final catalogueModel.Item? item;
   const ItemDetailsScreen({Key? key, required this.item}) : super(key: key);
 
   @override
@@ -16,18 +17,42 @@ class ItemDetailsScreen extends StatefulWidget {
 }
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
+  final titleController = TextEditingController();
+  final mrpController = TextEditingController();
+  final discountPercentController = TextEditingController();
+  final unitController = TextEditingController();
+  final measurementController = TextEditingController();
+  final descriptionController = TextEditingController();
+  ImageProvider _image = AssetImage('assets/images/noImage.png');
+  String _title = "Add Product";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.item == null) {
+      return;
+    }
+    _title = "Edit Product";
+    _image = widget.item!.images.length == 0
+        ? AssetImage('assets/images/noImage.png') as ImageProvider
+        : NetworkImage(widget.item!.images[0].imageUrl);
+    titleController.text = widget.item!.displayName;
+    mrpController.text = widget.item!.mrp.toString();
+    discountPercentController.text = widget.item!.discountPercent.toString();
+    unitController.text = widget.item!.unit.name;
+    measurementController.text = widget.item!.measurement;
+    descriptionController.text =
+        widget.item!.description == null ? "" : widget.item!.description;
+  }
+
   @override
   Widget build(BuildContext context) {
-    int a = widget.item.images.length;
-    // CatalogueModel.items =
-    //     List.from(skuList).map<Item>((item) => Item.fromMap(item)).toList();
-    
     itemImages() {
       return Stack(
         children: [
           CircleAvatar(
             radius: 80,
-            backgroundImage: NetworkImage(widget.item.images[0].imageUrl),
+            backgroundImage: _image,
           ),
           Positioned(
               bottom: 5,
@@ -48,7 +73,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
     }
 
     return Scaffold(
-        appBar: SnapPeUI().nAppBar("Edit Product"),
+        appBar: SnapPeUI().nAppBar(_title),
         body: Container(
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -57,23 +82,21 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
               children: [
                 itemImages(),
                 TextFormField(
-                  initialValue: widget.item.displayName,
+                  controller: titleController,
                   keyboardType: TextInputType.name,
                   maxLength: 200,
                   decoration: InputDecoration(
-                    hintText: "Enter Title",
-                    labelText: "Title"
-                  ),
+                      hintText: "Enter Title", labelText: "Title"),
                 ),
                 TextFormField(
-                  initialValue: widget.item.sellingPrice.toString(),
+                  controller: mrpController,
                   keyboardType: TextInputType.number,
                   maxLength: 10,
                   decoration: InputDecoration(
                       hintText: "Enter MRP Price", labelText: "MRP Price"),
                 ),
                 TextFormField(
-                  initialValue: widget.item.discountPercent.toString(),
+                  controller: discountPercentController,
                   keyboardType: TextInputType.number,
                   maxLength: 10,
                   decoration: InputDecoration(
@@ -81,21 +104,21 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                       labelText: "Discounted Price"),
                 ),
                 TextFormField(
-                  initialValue: widget.item.unit.name,
+                  controller: unitController,
                   keyboardType: TextInputType.name,
                   maxLength: 100,
                   decoration: InputDecoration(
                       hintText: "Enter Unit", labelText: "Unit"),
                 ),
                 TextFormField(
-                  initialValue: widget.item.measurement,
+                  controller: measurementController,
                   keyboardType: TextInputType.number,
                   maxLength: 50,
                   decoration: InputDecoration(
                       hintText: "Enter Measurement", labelText: "Measurement"),
                 ),
                 TextFormField(
-                  initialValue: widget.item.description,
+                  controller: descriptionController,
                   keyboardType: TextInputType.name,
                   maxLength: 500,
                   decoration: InputDecoration(
@@ -108,7 +131,19 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     style: ButtonStyle(
                         fixedSize: MaterialStateProperty.all(Size(250, 40))),
                     onPressed: () {
-                      Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
+                      if (widget.item != null) {
+                        widget.item!.displayName = titleController.text;
+                        widget.item!.mrp = double.parse(mrpController.text);
+                        widget.item!.discountPercent =
+                            double.parse(discountPercentController.text);
+                        widget.item!.unit.name = unitController.text;
+                        widget.item!.measurement = measurementController.text;
+                        widget.item!.description = descriptionController.text;
+
+                        SnapPeNetworks().saveItem(context, widget.item!);
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
+                      }
                     },
                     child: Text(
                       "Save",

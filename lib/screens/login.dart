@@ -16,27 +16,6 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  bool _isLogin = false;
-  //final _fromKey = GlobalKey()
-
-  @override
-  void initState() {
-    super.initState();
-    _checkLogin();
-    print(_isLogin);
-  }
-
-  _checkLogin() async {
-    _isLogin = await SnapPeUtils().checkLogin();
-    print("Is Login - $_isLogin");
-    if (_isLogin) {
-      print("home");
-      Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
-    }
-    // print("Is Login - $_isLogin");
-    // setState(() {});
-  }
-
   void insertdata() async {
     Map<String, dynamic> row = {
       DataBaseHelper.cUserName: "Rohit Gupta",

@@ -95,26 +95,26 @@ class Sku {
   String type;
   bool availability;
   bool showMrp;
-  int mrp;
-  int sellingPrice;
+  double mrp;
+  double sellingPrice;
   List<Image> images;
   Unit unit;
   String measurement;
-  dynamic description;
-  dynamic thirdPartySku;
-  int length;
-  int width;
-  int height;
-  int weight;
-  int moq;
-  dynamic gst;
-  dynamic hsnSacCode;
+  String? description;
+  String? thirdPartySku;
+  double? length;
+  double? width;
+  double? height;
+  double? weight;
+  int? moq;
+  double? gst;
+  String? hsnSacCode;
   bool includedInMrp;
-  int discountPercent;
-  Variant variant;
+  double discountPercent;
+  Variant? variant;
   List<Sku> skuVariants;
   bool isVisible;
-  String tags;
+  String? tags;
   bool trackInventory;
   int availableStock;
   bool valid;
@@ -133,20 +133,22 @@ class Sku {
         images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
         unit: Unit.fromJson(json["unit"]),
         measurement: json["measurement"],
-        description: json["description"],
-        thirdPartySku: json["thirdPartySku"],
+        description: json["description"] == null ? null : json["description"],
+        thirdPartySku:
+            json["thirdPartySku"] == null ? null : json["thirdPartySku"],
         length: json["length"] == null ? null : json["length"],
         width: json["width"] == null ? null : json["width"],
         height: json["height"] == null ? null : json["height"],
         weight: json["weight"] == null ? null : json["weight"],
         moq: json["moq"] == null ? null : json["moq"],
-        gst: json["gst"],
-        hsnSacCode: json["hsnSacCode"],
+        gst: json["gst"] == null ? null : json["gst"],
+        hsnSacCode: json["hsnSacCode"] == null ? null : json["hsnSacCode"],
         includedInMrp:
-            json["includedInMrp"] == null ? null : json["includedInMrp"],
+            json["includedInMrp"] == null ? true : json["includedInMrp"],
         discountPercent:
-            json["discountPercent"] == null ? null : json["discountPercent"],
-        variant: json["variant"],
+            json["discountPercent"] == null ? 0 : json["discountPercent"],
+        variant:
+            json["variant"] == null ? null : Variant.fromJson(json["variant"]),
         skuVariants:
             List<Sku>.from(json["skuVariants"].map((x) => Sku.fromJson(x))),
         isVisible: json["isVisible"],
@@ -170,18 +172,18 @@ class Sku {
         "images": List<dynamic>.from(images.map((x) => x.toJson())),
         "unit": unit.toJson(),
         "measurement": measurement,
-        "description": description,
-        "thirdPartySku": thirdPartySku,
+        "description": description == null ? null : description,
+        "thirdPartySku": thirdPartySku == null ? null : thirdPartySku,
         "length": length == null ? null : length,
         "width": width == null ? null : width,
         "height": height == null ? null : height,
         "weight": weight == null ? null : weight,
         "moq": moq == null ? null : moq,
-        "gst": gst,
-        "hsnSacCode": hsnSacCode,
-        "includedInMrp": includedInMrp == null ? null : includedInMrp,
-        "discountPercent": discountPercent == null ? null : discountPercent,
-        "variant": variant == null ? null : variant.toJson(),
+        "gst": gst == null ? null : gst,
+        "hsnSacCode": hsnSacCode == null ? null : hsnSacCode,
+        "includedInMrp": includedInMrp,
+        "discountPercent": discountPercent,
+        "variant": variant == null ? null : variant!.toJson(),
         "skuVariants": List<dynamic>.from(skuVariants.map((x) => x.toJson())),
         "isVisible": isVisible,
         "tags": tags == null ? null : tags,

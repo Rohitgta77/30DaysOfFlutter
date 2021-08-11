@@ -2,11 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_catalog/constants/colorsConstants.dart';
 import 'package:flutter_catalog/screens/Registration.dart';
+import 'package:flutter_catalog/screens/catagoryScreen.dart';
 import 'package:flutter_catalog/screens/demo.dart';
 import 'package:flutter_catalog/screens/home.dart';
+import 'package:flutter_catalog/screens/itemDetailsScreen.dart';
 import 'package:flutter_catalog/screens/login.dart';
 import 'package:flutter_catalog/screens/loginWithPwd.dart';
 import 'package:flutter_catalog/screens/otp.dart';
+import 'package:flutter_catalog/screens/splahScreen.dart';
 import 'package:flutter_catalog/utils/snapPeRoutes.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,11 +25,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -37,7 +35,7 @@ class _MyAppState extends State<MyApp> {
               Theme.of(context).textTheme.apply(bodyColor: kSecondayTextcolor),
           fontFamily: GoogleFonts.lato().fontFamily),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      initialRoute: SnapPeRoutes.loginRoute,
+      initialRoute: SnapPeRoutes.splashRoute,
       routes: {
         SnapPeRoutes.loginRoute: (context) => LogIn(),
         SnapPeRoutes.homeRoute: (context) => Home(),
@@ -46,7 +44,11 @@ class _MyAppState extends State<MyApp> {
             ),
         SnapPeRoutes.registrationRoute: (context) => Registration(),
         SnapPeRoutes.demo: (context) => Demo(),
-        SnapPeRoutes.loginWithPwdRoute: (context) => LogInWithPwd()
+        SnapPeRoutes.loginWithPwdRoute: (context) => LogInWithPwd(),
+        SnapPeRoutes.splashRoute: (context) => SplashScreen(),
+        SnapPeRoutes.itemDetailsRoute: (context) =>
+            ItemDetailsScreen(item: null),
+        SnapPeRoutes.categoryRoute: (context) => CatagoryScreen()
       },
     );
   }

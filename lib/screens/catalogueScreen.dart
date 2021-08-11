@@ -1,10 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_catalog/models/catalogue.dart';
 import 'package:flutter_catalog/models/catalogueModel.dart';
 import 'package:flutter_catalog/utils/snapPeNetworks.dart';
+import 'package:flutter_catalog/utils/snapPeRoutes.dart';
 import 'package:flutter_catalog/widgets/itemWidget.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class CatalogueScreen extends StatefulWidget {
   const CatalogueScreen({Key? key}) : super(key: key);
@@ -14,33 +16,99 @@ class CatalogueScreen extends StatefulWidget {
 }
 
 class _CatalogueScreenState extends State<CatalogueScreen> {
+  int page = 0, size = 15, totalRecords = 0, pages = 0;
+  List<Item>? itemsList;
+  List<Item>? newItemsList;
+  List itemsArray = [];
+  final scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(listenSrolling);
     _loadData();
+    //_loadItems();
+  }
+
+  void listenSrolling() async {
+    if (scrollController.position.maxScrollExtent - scrollController.offset ==
+        0.0) {
+      print("end");
+      if (page != pages) {
+        page = page + 1;
+        _loadData();
+      } else {
+        MotionToast.info(description: "There no data.").show(context);
+      }
+    }
+  }
+
+  void scrollDown() {
+    final double end = scrollController.position.maxScrollExtent;
+    print(end);
+  }
+
+  _loadItems() async {
+    final resData = await SnapPeNetworks().getItemList(context, page, size);
+    if (resData == "") {
+      return;
+    }
+    final decodedData = jsonDecode(resData);
+    Catalogue catalogue = Catalogue.fromJson(decodedData);
+    totalRecords = catalogue.totalRecords;
+    pages = catalogue.pages;
+    var newitemsArray = decodedData["skuList"];
+
+    // itemsArray.addAll(newitemsArray);
+    // print(newitemsArray);
+    // CatalogueModel.items =
+    //     List.from(itemsArray).map<Item>((item) => Item.fromMap(item)).toList();
+    // setState(() {});
   }
 
   _loadData() async {
-    final resData = await SnapPeNetworks().getItemList(context);
+    final resData = await SnapPeNetworks().getItemList(context, page, size);
     if (resData == "") {
       return;
     }
     //final itemListJson = await rootBundle.loadString("assets/itemList.json");
     final decodedData = jsonDecode(resData);
-    var skuList = decodedData["skuList"];
-    print(skuList);
+    var newitemsArray = decodedData["skuList"];
+    itemsArray.addAll(newitemsArray);
     CatalogueModel.items =
-        List.from(skuList).map<Item>((item) => Item.fromMap(item)).toList();
+        List.from(itemsArray).map<Item>((item) => Item.fromMap(item)).toList();
+    print(CatalogueModel.items.length);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     //final dummy = List.generate(15, (index) => CatalogueModel.items[0]);
-    return ListView.builder(
-        itemCount: CatalogueModel.items.length,
-        itemBuilder: (context, index) {
-          return ItemWidget(item: CatalogueModel.items[index]);
-        });
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future.delayed(
+            Duration(seconds: 1),
+            () {
+              page = 0;
+              itemsArray.clear();
+              _loadData();
+              setState(() {});
+            },
+          );
+        },
+        child: ListView.builder(
+            controller: scrollController,
+            itemCount: CatalogueModel.items.length,
+            itemBuilder: (context, index) {
+              return ItemWidget(item: CatalogueModel.items[index]);
+            }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushNamed(context, SnapPeRoutes.categoryRoute);
+        },
+      ),
+    );
   }
 }

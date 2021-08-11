@@ -123,6 +123,12 @@ class NetworkConstants {
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/RejoiceFresh/skus/30041
   }
 
+  static Uri getCategory(String clientGroupName) {
+    String finalURL = MERCHANTS_EP + clientGroupName + "/skus-types";
+    return Uri.parse(finalURL);
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/skus-types
+  }
+
   // static String GetQRCodeUrl(String ApplicationNo, String UserId, String OrderId) {
   //     return SnapPe_SERVICES_EP + "applications/" + ApplicationNo + "/users/" + UserId + "/upi-code/" + UserId + "_" + OrderId + ".png";
   // }
