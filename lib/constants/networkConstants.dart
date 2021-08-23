@@ -74,26 +74,24 @@ class NetworkConstants {
         "\"}";
   }
 
-  static const String SOCKET_SERVER =
-      "https://websocket-staging.snap.pe/"; //"http://10.0.2.2:3001/";// https://websocket-staging.snap.pe/
-  static const String SOCKET_DOMAIN = "dev-cb.snap.pe";
+  //static const String SOCKET_SERVER = "https://websocket-staging.snap.pe/"; //"http://10.0.2.2:3001/";// https://websocket-staging.snap.pe/
+  //static const String SOCKET_DOMAIN = "dev-cb.snap.pe";
   //static const String SOCKET_DOMAIN = "retail.snap.pe";
 
-  //static const String Domain = "https://retail.snap.pe/"; //Production End-Point
-  static const String Domain = "https://qa.snap.pe/"; //QA End-Point
+  static const String Domain = "https://retail.snap.pe/"; //Production End-Point
+  //static const String Domain = "https://qa.snap.pe/"; //QA End-Point
   //static const String CHAT_DOMAIN = "https://retail.snap.pe/"; //Production End-Point
-  static const String CHAT_DOMAIN =
-      "https://staging-cb.snap.pe/"; //QA End-Point
+  //static const String CHAT_DOMAIN = "https://staging-cb.snap.pe/"; //QA End-Point
   //static const String CHAT_DOMAIN = "https://dev-cb.snap.pe/";                    //QA End-Point
 
-  static const String MESSENGER_EP =
-      "${CHAT_DOMAIN}messenger/chatbot/rest/v1/app/";
-  static const String LIVEAGENT_EP =
-      CHAT_DOMAIN + "chatbot/rest/v1/app/liveagent/";
-  static const String UPDATE_FCM_IN_SERVER =
-      CHAT_DOMAIN + "messenger/chatbot/rest/v1/fcm/connection";
-  static const String DELETE_FCM_IN_SERVER =
-      CHAT_DOMAIN + "messenger/chatbot/rest/v1/fcm/connection?fcm_id=";
+  // static const String MESSENGER_EP =
+  //     "${CHAT_DOMAIN}messenger/chatbot/rest/v1/app/";
+  // static const String LIVEAGENT_EP =
+  //     CHAT_DOMAIN + "chatbot/rest/v1/app/liveagent/";
+  // static const String UPDATE_FCM_IN_SERVER =
+  //     CHAT_DOMAIN + "messenger/chatbot/rest/v1/fcm/connection";
+  // static const String DELETE_FCM_IN_SERVER =
+  //     CHAT_DOMAIN + "messenger/chatbot/rest/v1/fcm/connection?fcm_id=";
 
   static const String DASHBOARD_EP = Domain + "merchant/orders";
   static const String SnapPe_SERVICES_EP = Domain + "snappe-services/rest/v1/";
@@ -117,8 +115,9 @@ class NetworkConstants {
     //"https://retail.snap.pe/snappe-services/rest/v1/merchants/RejoiceFresh/skus?page=0&size=15&mode=desktop"
   }
 
-  static Uri updateItem(String clientGroupName, String itemId) {
-    String finalURL = MERCHANTS_EP + clientGroupName + "/skus/$itemId";
+  static Uri updateItem(String clientGroupName, String skuId) {
+    String query = skuId == "null" ? "" : "/$skuId";
+    String finalURL = MERCHANTS_EP + clientGroupName + "/skus$query";
     return Uri.parse(finalURL);
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/RejoiceFresh/skus/30041
   }
@@ -127,6 +126,19 @@ class NetworkConstants {
     String finalURL = MERCHANTS_EP + clientGroupName + "/skus-types";
     return Uri.parse(finalURL);
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/skus-types
+  }
+
+  static Uri getUnit(String clientGroupName) {
+    String finalURL = MERCHANTS_EP + clientGroupName + "/skus-units";
+    return Uri.parse(finalURL);
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/Mtalkz/skus-units
+  }
+
+  static Uri uploadImage(String clientGroupName, String? skuId) {
+    String query = skuId == "null" ? "" : "?skuId=$skuId";
+    String finalURL = MERCHANTS_EP + clientGroupName + "/skus/images$query";
+    return Uri.parse(finalURL);
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/skus/images?skuId=707019
   }
 
   // static String GetQRCodeUrl(String ApplicationNo, String UserId, String OrderId) {

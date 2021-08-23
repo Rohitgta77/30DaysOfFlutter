@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/screens/liveAgentScreen.dart';
-import 'package:flutter_catalog/screens/orderScreen.dart';
-import 'package:flutter_catalog/screens/paymentScreen.dart';
-import 'package:flutter_catalog/screens/profileScreen.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/screens/liveAgentScreen.dart';
+import 'package:snap_pe_merchant/screens/orderScreen.dart';
+import 'package:snap_pe_merchant/screens/paymentScreen.dart';
+import 'package:snap_pe_merchant/screens/profileScreen.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 
 import 'catalogueScreen.dart';
 
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
     ];
 
     return Scaffold(
-      appBar: SnapPeUI().AppBarSmall(),
+      appBar: SnapPeUI().appBarSmall(),
       drawer: Drawer(),
       body: screens[_screenIndex],
       

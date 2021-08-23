@@ -1,4 +1,4 @@
-name: flutter_catalog
+name: snap_pe_merchant
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -35,8 +35,11 @@ dependencies:
   path_provider : any
   shared_preferences: ^2.0.6
   image_picker: ^0.8.2
-  motion_toast: ^1.3.0
+  image_cropper: ^1.4.1
+  fluttertoast: ^8.0.8
   flutter_typeahead: ^3.2.0
+  carousel_slider: ^4.0.0
+  dio: ^4.0.0
 
 dev_dependencies:
   flutter_test:

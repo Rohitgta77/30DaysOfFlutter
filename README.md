@@ -1,4 +1,4 @@
-# flutter_catalog
+# snap_pe_merchant
 
 A new Flutter project.
 

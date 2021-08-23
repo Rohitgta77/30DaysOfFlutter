@@ -1,24 +1,34 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart';
-import 'package:flutter_catalog/utils/snapPeUtil.dart';
-import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
-import 'package:flutter_catalog/constants/networkConstants.dart';
-import 'package:flutter_catalog/constants/sharedPrefsConstants.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart';
+import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:snap_pe_merchant/constants/networkConstants.dart';
+import 'package:snap_pe_merchant/constants/sharedPrefsConstants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 
 class SnapPeNetworks {
   Future requestOTP(String mobile, String signature) async {
     Uri url = NetworkConstants.getOTPUrl(mobile);
-    var response = await http.get(url);
     print('requestOTP URL: $url');
+    var response = await http.get(url);
+
     print('Response status: ${response.statusCode}');
     print('Response Body: ${response.body}');
     if (response.statusCode == 200) {
       return true;
     } else {
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong. ${response.statusCode}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return false;
     }
   }
@@ -46,12 +56,20 @@ class SnapPeNetworks {
     var token = response.headers[NetworkConstants.TOKEN]!;
     print(token);
     var responseData = jsonDecode(response.body);
-    var clientGroupName = responseData[NetworkConstants.CLIENT_GROUP_NAME];
-    var clientName = responseData[NetworkConstants.CLIENT_NAME];
-    var phoneNo = responseData[NetworkConstants.PHONE_NO];
-    var role = responseData[NetworkConstants.ROLE];
-    var live_agent_user_id =
-        responseData[NetworkConstants.LIVE_AGENT_USER_ID].toString();
+    var merchant;
+    try {
+      var merchantsList = responseData["merchants"];
+      merchant = merchantsList[0];
+    } catch (ex) {
+      merchant = responseData;
+    }
+
+    var clientGroupName = merchant[NetworkConstants.CLIENT_GROUP_NAME];
+    var clientName = merchant[NetworkConstants.CLIENT_NAME];
+    var phoneNo = merchant[NetworkConstants.PHONE_NO];
+    var role = merchant[NetworkConstants.ROLE];
+    var liveAgentUserId =
+        merchant[NetworkConstants.LIVE_AGENT_USER_ID].toString();
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(userDetails, response.body);
@@ -60,7 +78,7 @@ class SnapPeNetworks {
     preferences.setString(NetworkConstants.PHONE_NO, phoneNo);
     preferences.setString(NetworkConstants.ROLE, role);
     preferences.setString(
-        NetworkConstants.LIVE_AGENT_USER_ID, live_agent_user_id);
+        NetworkConstants.LIVE_AGENT_USER_ID, liveAgentUserId);
     preferences.setString(NetworkConstants.TOKEN, token);
   }
 
@@ -71,10 +89,11 @@ class SnapPeNetworks {
 
   Future login(String email, String password) async {
     Uri url = NetworkConstants.loginURL;
+    print('Request OTP URL: $url');
     var reqBody = NetworkConstants.requestBodyLogin(email, password);
     var response = await http.post(url,
         body: reqBody, headers: {"Content-Type": "application/json"});
-    print('Request OTP URL: $url');
+
     print('Resquest Body: $reqBody');
     print('Response status: ${response.statusCode}');
     print(' ${response.body}');
@@ -92,13 +111,14 @@ class SnapPeNetworks {
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      MotionToast.error(
-        title: "Error",
-        description: "Something Wrong.",
-        layoutOrientation: ORIENTATION.RTL,
-        animationType: ANIMATION.FROM_RIGHT,
-        width: 300,
-      ).show(context);
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return "";
     }
     Uri url = NetworkConstants.getItems(clientGroupName, page, size);
@@ -117,59 +137,79 @@ class SnapPeNetworks {
     }
   }
 
-  Future saveItem(BuildContext context, Item item) async {
+  Future<bool> saveItem(BuildContext context, Sku item, bool isNewItem) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      MotionToast.error(
-        title: "Error",
-        description: "Something Wrong.",
-        layoutOrientation: ORIENTATION.RTL,
-        animationType: ANIMATION.FROM_RIGHT,
-        width: 300,
-      ).show(context);
-      return "";
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return false;
     }
     Uri url = NetworkConstants.updateItem(clientGroupName, item.id.toString());
+    // var df = jsonEncode(rse);
+    // print(rse);
+    var resbody = jsonEncode(item);
 
-    final resbody = jsonEncode(item);
-    var response = await http.put(url,
-        headers: {"Content-Type": "application/json", "token": "$token"},
-        body: resbody);
+    var response;
+    if (isNewItem) {
+      response = await http.post(url,
+          headers: {"Content-Type": "application/json", "token": "$token"},
+          body: resbody);
+    } else {
+      response = await http.put(url,
+          headers: {"Content-Type": "application/json", "token": "$token"},
+          body: resbody);
+    }
 
-    print('Request getItemList: $url');
+    print('Request saveItem: $url');
     print('Response status: ${response.statusCode}');
-    //print(' ${response.body}');
+    print(' Body = $resbody');
 
     if (response.statusCode == 200) {
-      MotionToast.success(
-        title: "Saved",
-        description: "your items edited successfully. ",
-        layoutOrientation: ORIENTATION.RTL,
-        animationType: ANIMATION.FROM_RIGHT,
-        width: 300,
-      ).show(context);
-      return response.body;
+      Fluttertoast.showToast(
+          msg: "your items edited successfully.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return true;
     } else {
-      return "";
+      Fluttertoast.showToast(
+          msg: "Something went Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return false;
     }
   }
 
-  Future getCategory(BuildContext context) async {
+  Future getCategory() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      MotionToast.error(
-        title: "Error",
-        description: "Something Wrong.",
-        layoutOrientation: ORIENTATION.RTL,
-        animationType: ANIMATION.FROM_RIGHT,
-        width: 300,
-      ).show(context);
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
       return "";
     }
     Uri url = NetworkConstants.getCategory(clientGroupName);
@@ -177,12 +217,79 @@ class SnapPeNetworks {
     var response = await http.get(url,
         headers: {"Content-Type": "application/json", "token": "$token"});
 
-    print('Request getItemList: $url');
+    print('Request getCategory: $url');
     print('Response status: ${response.statusCode}');
     //print(' ${response.body}');
 
-    if (response.statusCode == 200) {      
+    if (response.statusCode == 200) {
       return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future getUnit() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return "";
+    }
+    Uri url = NetworkConstants.getUnit(clientGroupName);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getCategory: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<dynamic> uploadImage(String? skuId, File imageFile) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+
+    var token = preferences.getString(NetworkConstants.TOKEN);
+
+    Uri url = NetworkConstants.uploadImage(clientGroupName!, skuId);
+
+    print('Request uploadImage URL: $url');
+
+    var formData = FormData.fromMap({
+      'files': [
+        MultipartFile.fromFileSync(imageFile.path, filename: 'files'),
+        MultipartFile.fromFileSync(imageFile.path, filename: 'files'),
+      ]
+    });
+
+    Response<Map> response = await Dio().post(url.toString(),
+        data: formData,
+        options: Options(headers: {
+          "cookie": "token=$token",
+          "Content-Type": "multipart/form-data"
+        }));
+
+    print('Response status: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      print("uploadImage response :  ${response.data}");
+
+      return response.data;
     } else {
       return "";
     }

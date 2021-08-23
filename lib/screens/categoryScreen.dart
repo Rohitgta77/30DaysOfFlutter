@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/models/category.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:flutter/widgets.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart';
+import 'package:snap_pe_merchant/models/category.dart';
+import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class CatagoryScreen extends StatefulWidget {
-  const CatagoryScreen({Key? key}) : super(key: key);
+class CategoryScreen extends StatefulWidget {
+  const CategoryScreen({Key? key}) : super(key: key);
 
   @override
-  _CatagoryScreenState createState() => _CatagoryScreenState();
+  _CategoryScreenState createState() => _CategoryScreenState();
 }
 
-class _CatagoryScreenState extends State<CatagoryScreen> {
+class _CategoryScreenState extends State<CategoryScreen> {
   Category? category;
   @override
   void initState() {
@@ -20,7 +23,7 @@ class _CatagoryScreenState extends State<CatagoryScreen> {
   }
 
   _loaddata() async {
-    final resData = await SnapPeNetworks().getCategory(context);
+    final resData = await SnapPeNetworks().getCategory();
     if (resData == "") {
       return;
     }
@@ -30,7 +33,7 @@ class _CatagoryScreenState extends State<CatagoryScreen> {
   Future<List<String>> getCategorySuggestion(String query) async {
     List<String> sku = category!.skuTypes.where((element) {
       final elementLower = element.toLowerCase();
-      final queryLower = element.toLowerCase();
+      final queryLower = query.toLowerCase();
       return elementLower.contains(queryLower);
     }).toList();
     return sku;
@@ -49,8 +52,9 @@ class _CatagoryScreenState extends State<CatagoryScreen> {
           );
         },
         onSuggestionSelected: (Object? suggestion) {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Text("")));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ItemDetailsScreen(
+                  skuItem: Sku(type: suggestion.toString()))));
         },
       ),
     );

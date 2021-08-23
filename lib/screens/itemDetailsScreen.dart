@@ -1,16 +1,26 @@
+import 'dart:io';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart' as catalogueModel;
-import 'package:flutter_catalog/screens/demo.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
+import 'package:snap_pe_merchant/models/category.dart' as i_Category;
+import 'package:snap_pe_merchant/models/unit.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
-  final catalogueModel.Item? item;
-  const ItemDetailsScreen({Key? key, required this.item}) : super(key: key);
+  final i_Catalogue.Sku skuItem;
+  const ItemDetailsScreen({
+    Key? key,
+    required this.skuItem,
+  }) : super(key: key);
 
   @override
   _ItemDetailsScreenState createState() => _ItemDetailsScreenState();
@@ -18,140 +28,331 @@ class ItemDetailsScreen extends StatefulWidget {
 
 class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   final titleController = TextEditingController();
+  final brandController = TextEditingController();
   final mrpController = TextEditingController();
-  final discountPercentController = TextEditingController();
-  final unitController = TextEditingController();
+  final sellingPriceController = TextEditingController();
+  //final unitController = TextEditingController();
   final measurementController = TextEditingController();
   final descriptionController = TextEditingController();
-  ImageProvider _image = AssetImage('assets/images/noImage.png');
-  String _title = "Add Product";
+  final categoryController = TextEditingController();
+  bool isNewItem = true;
+  List<String> imageUrlList = [];
+  late i_Catalogue.Sku sku;
+
+  Unit? selectedUnit;
+  List<Unit> units = [
+    Unit(id: 1, name: "Kgs"),
+    Unit(id: 1, name: "Gms"),
+    Unit(id: 1, name: "Mgs")
+  ];
 
   @override
   void initState() {
     super.initState();
-    if (widget.item == null) {
+    populateValue();
+    _loaddata();
+  }
+
+  _loaddata() async {
+    final resData = await SnapPeNetworks().getCategory();
+    if (resData == "") {
       return;
     }
-    _title = "Edit Product";
-    _image = widget.item!.images.length == 0
-        ? AssetImage('assets/images/noImage.png') as ImageProvider
-        : NetworkImage(widget.item!.images[0].imageUrl);
-    titleController.text = widget.item!.displayName;
-    mrpController.text = widget.item!.mrp.toString();
-    discountPercentController.text = widget.item!.discountPercent.toString();
-    unitController.text = widget.item!.unit.name;
-    measurementController.text = widget.item!.measurement;
-    descriptionController.text =
-        widget.item!.description == null ? "" : widget.item!.description;
+    category = i_Category.categoryFromJson(resData);
+
+    final resDatas = await SnapPeNetworks().getUnit();
+    if (resDatas == "") {
+      return;
+    }
+    UnitModel unitModel = unitFromJson(resDatas);
+    units = unitModel.units;
+    selectedUnit = sku.unit;
+    print("Units : ${units.length}");
+  }
+
+  populateValue() {
+    sku = widget.skuItem;
+    selectedUnit = sku.unit;
+    print("selected Unit : ${selectedUnit!.name}");
+
+    if (sku.id != null) {
+      isNewItem = false;
+      if (sku.images != null && sku.images!.length != 0) {
+        imageUrlList = sku.images!.map((e) => e.imageUrl ?? "").toList();
+      }
+
+      titleController.text = sku.displayName ?? "";
+      brandController.text = sku.brand ?? "";
+      mrpController.text = sku.mrp!.round().toString();
+      sellingPriceController.text = sku.sellingPrice!.round().toString();
+      //unitController.text = sku.unit!.name;
+      measurementController.text = sku.measurement!;
+      descriptionController.text = sku.description ?? "";
+      categoryController.text = sku.type ?? "";
+    }
+  }
+
+  imageSlider() {
+    return CarouselSlider.builder(
+      itemCount: imageUrlList.length,
+      itemBuilder: (context, index, realIndex) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+            image: DecorationImage(
+              image: NetworkImage(imageUrlList[index]),
+            ),
+          ),
+        );
+      },
+      options: CarouselOptions(
+          height: 200,
+          enableInfiniteScroll: false,
+          viewportFraction: 0.7,
+          autoPlay: true,
+          enlargeCenterPage: true),
+    );
+  }
+
+  btnImage() async {
+    final file = await SnapPeUtils.pickMedia(cropSquareImage);
+    print("final image -  $file");
+    if (file == null) {
+      return;
+    }
+    var result = await SnapPeNetworks().uploadImage(sku.id.toString(), file);
+    if (result != "") {
+      Fluttertoast.showToast(
+          msg: "Image Successfully Uploaded.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      setState(() {
+        i_Catalogue.Image i = i_Catalogue.Image();
+        i.id = result["id"];
+        i.status = result["status"];
+        i.messages = result["messages"];
+        i.imageUrl = result["imageUrl"];
+        i.imageText = result["imageText"];
+        List<i_Catalogue.Image> list = [i];
+
+        sku.images = list;
+
+        imageUrlList.add(i.imageUrl.toString());
+      });
+    } else {
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => ImageScreen(_imageList)),
+    // );
+  }
+
+  Future<File?> cropSquareImage(File imageFile) async {
+    return await ImageCropper.cropImage(
+        sourcePath: imageFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1));
+  }
+
+  _imagePreview() {
+    return Stack(
+      children: [
+        imageSlider(),
+        Positioned(
+            bottom: 5,
+            right: 0,
+            child: InkWell(
+              onTap: () => btnImage(),
+              child: Icon(
+                Icons.camera_alt_rounded,
+                color: kSecondayTextcolor,
+                size: 50,
+              ),
+            ))
+      ],
+    );
+  }
+
+  i_Category.Category? category;
+
+  Future<List<String>> getCategorySuggestion(String query) async {
+    List<String> sku = category!.skuTypes.where((element) {
+      final elementLower = element.toLowerCase();
+      final queryLower = query.toLowerCase();
+      return elementLower.contains(queryLower);
+    }).toList();
+    return sku;
+  }
+
+  // Future<List<i_Catalogue.Unit>> getUnitSuggestion(String query) async {
+  //   List<i_Catalogue.Unit> sku = unitModel!.units.where((element) {
+  //     final elementLower = element.name.toLowerCase();
+  //     final queryLower = query.toLowerCase();
+  //     return elementLower.contains(queryLower);
+  //   }).toList();
+  //   return sku;
+  // }
+
+  _formFields() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: brandController,
+          keyboardType: TextInputType.name,
+          maxLength: 200,
+          decoration:
+              InputDecoration(hintText: "Enter Brand", labelText: "Brand"),
+        ),
+        TextFormField(
+          controller: titleController,
+          keyboardType: TextInputType.name,
+          maxLength: 200,
+          decoration:
+              InputDecoration(hintText: "Enter Title", labelText: "Title"),
+        ),
+        TypeAheadField<String>(
+          textFieldConfiguration: TextFieldConfiguration(
+              controller: categoryController,
+              decoration: InputDecoration(labelText: 'Catagory')),
+          suggestionsCallback: (pattern) async =>
+              await getCategorySuggestion(pattern),
+          itemBuilder: (BuildContext context, itemData) {
+            return ListTile(
+              title: Text(itemData),
+            );
+          },
+          onSuggestionSelected: (Object? suggestion) {
+            categoryController.text = suggestion.toString();
+          },
+        ),
+
+        // DropdownButton<Unit>(
+        //   value: selectedUnit,
+        //   onChanged: (Unit? newValue) {
+        //     setState(() {
+        //       selectedUnit = newValue!;
+        //       sku.unit = selectedUnit;
+        //     });
+        //   },
+        //   items: units!.map((Unit unit) {
+        //     return DropdownMenuItem<Unit>(
+        //       value: unit,
+        //       child: Text(
+        //         unit.name,
+        //         style: TextStyle(color: Colors.black),
+        //       ),
+        //     );
+        //   }).toList(),
+        // ),
+
+        // TypeAheadField<String>(
+        //   textFieldConfiguration: TextFieldConfiguration(
+        //       controller: unitController,
+        //       decoration: InputDecoration(labelText: 'Unit')),
+        //   suggestionsCallback: (pattern) async =>
+        //       await getUnitSuggestion(pattern),
+        //   itemBuilder: (BuildContext context, itemData) {
+        //     return ListTile(
+        //       title: Text(itemData),
+        //     );
+        //   },
+        //   onSuggestionSelected: (Object? suggestion) {
+        //     unitController.text = suggestion.toString();
+        //   },
+        // ),
+        TextFormField(
+          controller: mrpController,
+          keyboardType: TextInputType.number,
+          maxLength: 10,
+          decoration: InputDecoration(
+              hintText: "Enter MRP Price", labelText: "MRP Price"),
+        ),
+        TextFormField(
+          controller: sellingPriceController,
+          keyboardType: TextInputType.number,
+          maxLength: 10,
+          decoration: InputDecoration(
+              hintText: "Enter Selling Price", labelText: "Selling Price"),
+        ),
+        TextFormField(
+          controller: measurementController,
+          keyboardType: TextInputType.number,
+          maxLength: 50,
+          decoration: InputDecoration(
+              hintText: "Enter Measurement", labelText: "Measurement"),
+        ),
+        TextFormField(
+          controller: descriptionController,
+          keyboardType: TextInputType.name,
+          maxLength: 500,
+          decoration: InputDecoration(
+              hintText: "Enter Description", labelText: "Description"),
+        ),
+        SizedBox(height: 50),
+      ],
+    );
+  }
+
+  _saveButton() {
+    return ElevatedButton(
+        style: ButtonStyle(fixedSize: MaterialStateProperty.all(Size(250, 40))),
+        onPressed: () async {
+          sku.brand = brandController.text;
+          sku.displayName = titleController.text;
+          sku.mrp = double.parse(mrpController.text);
+          sku.sellingPrice = double.parse(sellingPriceController.text);
+          //sku.unit = unitController.text;
+          sku.unit = sku.unit ?? Unit(id: 9, name: "No");
+          sku.measurement = measurementController.text == ""
+              ? "1"
+              : measurementController.text;
+          sku.description = descriptionController.text;
+          sku.type = categoryController.text;
+
+          bool result =
+              await SnapPeNetworks().saveItem(context, sku, isNewItem);
+          if (!result) {
+            return;
+          }
+          Navigator.pop(context);
+          if (isNewItem) {
+            Navigator.pop(context);
+          }
+          Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
+        },
+        child: Text(
+          "Save",
+          style:
+              TextStyle(fontWeight: FontWeight.bold, color: kPrimaryTextColor),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    itemImages() {
-      return Stack(
-        children: [
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: _image,
-          ),
-          Positioned(
-              bottom: 5,
-              right: 0,
-              child: InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Demo()),
-                ), //getImage(ImageSource.gallery),
-                child: Icon(
-                  Icons.camera_alt_rounded,
-                  color: kSecondayTextcolor,
-                  size: 50,
-                ),
-              ))
-        ],
-      );
-    }
-
     return Scaffold(
-        appBar: SnapPeUI().nAppBar(_title),
+        appBar: SnapPeUI()
+            .nAppBar(isNewItem == true ? "New Product" : "Edit Product"),
         body: Container(
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 50.0),
             child: Column(
-              children: [
-                itemImages(),
-                TextFormField(
-                  controller: titleController,
-                  keyboardType: TextInputType.name,
-                  maxLength: 200,
-                  decoration: InputDecoration(
-                      hintText: "Enter Title", labelText: "Title"),
-                ),
-                TextFormField(
-                  controller: mrpController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 10,
-                  decoration: InputDecoration(
-                      hintText: "Enter MRP Price", labelText: "MRP Price"),
-                ),
-                TextFormField(
-                  controller: discountPercentController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 10,
-                  decoration: InputDecoration(
-                      hintText: "Enter Discounted Price",
-                      labelText: "Discounted Price"),
-                ),
-                TextFormField(
-                  controller: unitController,
-                  keyboardType: TextInputType.name,
-                  maxLength: 100,
-                  decoration: InputDecoration(
-                      hintText: "Enter Unit", labelText: "Unit"),
-                ),
-                TextFormField(
-                  controller: measurementController,
-                  keyboardType: TextInputType.number,
-                  maxLength: 50,
-                  decoration: InputDecoration(
-                      hintText: "Enter Measurement", labelText: "Measurement"),
-                ),
-                TextFormField(
-                  controller: descriptionController,
-                  keyboardType: TextInputType.name,
-                  maxLength: 500,
-                  decoration: InputDecoration(
-                      hintText: "Enter Description", labelText: "Description"),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(Size(250, 40))),
-                    onPressed: () {
-                      if (widget.item != null) {
-                        widget.item!.displayName = titleController.text;
-                        widget.item!.mrp = double.parse(mrpController.text);
-                        widget.item!.discountPercent =
-                            double.parse(discountPercentController.text);
-                        widget.item!.unit.name = unitController.text;
-                        widget.item!.measurement = measurementController.text;
-                        widget.item!.description = descriptionController.text;
-
-                        SnapPeNetworks().saveItem(context, widget.item!);
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
-                      }
-                    },
-                    child: Text(
-                      "Save",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryTextColor),
-                    )),
-              ],
+              children: [_imagePreview(), _formFields(), _saveButton()],
             ),
           ),
         ));

@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/models/catalogue.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/widgets/itemWidget.dart';
-import 'package:motion_toast/motion_toast.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart';
+import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/widgets/itemWidget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CatalogueScreen extends StatefulWidget {
   const CatalogueScreen({Key? key}) : super(key: key);
@@ -17,8 +16,9 @@ class CatalogueScreen extends StatefulWidget {
 
 class _CatalogueScreenState extends State<CatalogueScreen> {
   int page = 0, size = 15, totalRecords = 0, pages = 0;
-  List<Item>? itemsList;
-  List<Item>? newItemsList;
+  List<Sku>? itemsList;
+  List<Sku>? newItemsList;
+  List<Sku> skuList = [];
   List itemsArray = [];
   final scrollController = ScrollController();
   @override
@@ -33,11 +33,18 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
     if (scrollController.position.maxScrollExtent - scrollController.offset ==
         0.0) {
       print("end");
-      if (page != pages) {
+      if (page != totalRecords) {
         page = page + 1;
         _loadData();
       } else {
-        MotionToast.info(description: "There no data.").show(context);
+        Fluttertoast.showToast(
+            msg: "There no data.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
       }
     }
   }
@@ -47,23 +54,23 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
     print(end);
   }
 
-  _loadItems() async {
-    final resData = await SnapPeNetworks().getItemList(context, page, size);
-    if (resData == "") {
-      return;
-    }
-    final decodedData = jsonDecode(resData);
-    Catalogue catalogue = Catalogue.fromJson(decodedData);
-    totalRecords = catalogue.totalRecords;
-    pages = catalogue.pages;
-    var newitemsArray = decodedData["skuList"];
+  // _loadItems() async {
+  //   final resData = await SnapPeNetworks().getItemList(context, page, size);
+  //   if (resData == "") {
+  //     return;
+  //   }
+  //   final decodedData = jsonDecode(resData);
+  //   Catalogue catalogue = Catalogue.fromJson(decodedData);
+  //   totalRecords = catalogue.totalRecords;
+  //   pages = catalogue.pages;
+  //   //var newitemsArray = decodedData["skuList"];
 
-    // itemsArray.addAll(newitemsArray);
-    // print(newitemsArray);
-    // CatalogueModel.items =
-    //     List.from(itemsArray).map<Item>((item) => Item.fromMap(item)).toList();
-    // setState(() {});
-  }
+  //   // itemsArray.addAll(newitemsArray);
+  //   // print(newitemsArray);
+  //   // CatalogueModel.items =
+  //   //     List.from(itemsArray).map<Item>((item) => Item.fromMap(item)).toList();
+  //   // setState(() {});
+  // }
 
   _loadData() async {
     final resData = await SnapPeNetworks().getItemList(context, page, size);
@@ -74,9 +81,10 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
     final decodedData = jsonDecode(resData);
     var newitemsArray = decodedData["skuList"];
     itemsArray.addAll(newitemsArray);
-    CatalogueModel.items =
-        List.from(itemsArray).map<Item>((item) => Item.fromMap(item)).toList();
-    print(CatalogueModel.items.length);
+    //CatalogueModel.items
+    skuList =
+        List.from(itemsArray).map<Sku>((item) => Sku.fromJson(item)).toList();
+    print(skuList.length);
     setState(() {});
   }
 
@@ -98,15 +106,18 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
         },
         child: ListView.builder(
             controller: scrollController,
-            itemCount: CatalogueModel.items.length,
+            itemCount: skuList.length,
             itemBuilder: (context, index) {
-              return ItemWidget(item: CatalogueModel.items[index]);
+              return ItemWidget(item: skuList[index]);
             }),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.pushNamed(context, SnapPeRoutes.categoryRoute);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemDetailsScreen(skuItem: Sku())));
         },
       ),
     );

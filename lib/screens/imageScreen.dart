@@ -2,17 +2,19 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
 import 'package:image_picker/image_picker.dart';
 //import 'package:video_player/video_player.dart';
 
-class Demo extends StatefulWidget {
-  const Demo({Key? key}) : super(key: key);
+class ImageScreen extends StatefulWidget {
+  final List<i_Catalogue.Image>? imageList;
+  const ImageScreen(this.imageList) : super();
 
   @override
-  _DemoState createState() => _DemoState();
+  _ImageScreenState createState() => _ImageScreenState();
 }
 
-class _DemoState extends State<Demo> {
+class _ImageScreenState extends State<ImageScreen> {
   List<XFile>? _imageFileList;
 
   set _imageFile(XFile? value) {
@@ -53,8 +55,8 @@ class _DemoState extends State<Demo> {
         try {
           final pickedFile = await _picker.pickImage(
             source: source,
-            maxWidth: maxWidth,
-            maxHeight: maxHeight,
+            maxWidth: 500,
+            maxHeight: 500,
             imageQuality: quality,
           );
           setState(() {
@@ -83,6 +85,7 @@ class _DemoState extends State<Demo> {
   }
 
   Widget _previewImages() {
+
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;

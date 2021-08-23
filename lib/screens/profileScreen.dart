@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/helper/demodb.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
-import 'package:flutter_catalog/utils/snapPeUtil.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);

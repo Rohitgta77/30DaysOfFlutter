@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/screens/Registration.dart';
-import 'package:flutter_catalog/screens/catagoryScreen.dart';
-import 'package:flutter_catalog/screens/demo.dart';
-import 'package:flutter_catalog/screens/home.dart';
-import 'package:flutter_catalog/screens/itemDetailsScreen.dart';
-import 'package:flutter_catalog/screens/login.dart';
-import 'package:flutter_catalog/screens/loginWithPwd.dart';
-import 'package:flutter_catalog/screens/otp.dart';
-import 'package:flutter_catalog/screens/splahScreen.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/screens/Registration.dart';
+import 'package:snap_pe_merchant/screens/categoryScreen.dart';
+import 'package:snap_pe_merchant/screens/home.dart';
+import 'package:snap_pe_merchant/screens/login.dart';
+import 'package:snap_pe_merchant/screens/loginWithPwd.dart';
+import 'package:snap_pe_merchant/screens/splahScreen.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main(List<String> args) {
@@ -39,16 +36,11 @@ class _MyAppState extends State<MyApp> {
       routes: {
         SnapPeRoutes.loginRoute: (context) => LogIn(),
         SnapPeRoutes.homeRoute: (context) => Home(),
-        SnapPeRoutes.otpRoute: (context) => Otp(
-              mobileNumber: "",
-            ),
+        // SnapPeRoutes.otpRoute: (context) => Otp(mobileNumber: ""),
         SnapPeRoutes.registrationRoute: (context) => Registration(),
-        SnapPeRoutes.demo: (context) => Demo(),
         SnapPeRoutes.loginWithPwdRoute: (context) => LogInWithPwd(),
         SnapPeRoutes.splashRoute: (context) => SplashScreen(),
-        SnapPeRoutes.itemDetailsRoute: (context) =>
-            ItemDetailsScreen(item: null),
-        SnapPeRoutes.categoryRoute: (context) => CatagoryScreen()
+        SnapPeRoutes.categoryRoute: (context) => CategoryScreen()
       },
     );
   }

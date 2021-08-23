@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(flutter_catalog LANGUAGES CXX)
+project(snap_pe_merchant LANGUAGES CXX)
 
-set(BINARY_NAME "flutter_catalog")
+set(BINARY_NAME "snap_pe_merchant")
 
 cmake_policy(SET CMP0063 NEW)
 

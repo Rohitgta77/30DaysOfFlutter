@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/models/catalogueModel.dart' as catalogueModel;
-import 'package:flutter_catalog/screens/itemDetailsScreen.dart';
+import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
+import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
 
 class ItemWidget extends StatefulWidget {
-  final catalogueModel.Item item;
+  final i_Catalogue.Sku item;
   const ItemWidget({Key? key, required this.item}) : super(key: key);
 
   @override
@@ -12,9 +12,17 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
+  String subTitle = "";
+  @override
+  void initState() {
+    super.initState();
+    subTitle =
+        "₹${widget.item.sellingPrice} per ${widget.item.measurement} ${widget.item.unit!.name}";
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool _switch = widget.item.availability;
+    bool? _switch = widget.item.availability;
     return Card(
       elevation: 8,
       shape: StadiumBorder(),
@@ -22,12 +30,12 @@ class _ItemWidgetState extends State<ItemWidget> {
         leading: SizedBox(
           width: 50,
           height: 50,
-          child: widget.item.images.length == 0
+          child: widget.item.images!.length == 0
               ? Image.asset("assets/images/noImage.png")
-              : Image.network(widget.item.images[0].imageUrl),
+              : Image.network(widget.item.images![0].imageUrl ?? ""),
         ),
-        title: Text(widget.item.displayName),
-        subtitle: Text(widget.item.subTitle),
+        title: Text(widget.item.displayName!),
+        subtitle: Text(subTitle),
         trailing: FittedBox(
           fit: BoxFit.fill,
           child: Row(
@@ -37,7 +45,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                 style: TextStyle(fontSize: 10),
               ),
               Switch(
-                value: _switch,
+                value: _switch == null ? true : _switch,
                 onChanged: (value) {
                   setState(() {
                     _switch = value;
@@ -51,7 +59,8 @@ class _ItemWidgetState extends State<ItemWidget> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ItemDetailsScreen(item: widget.item)));
+                  builder: (context) =>
+                      ItemDetailsScreen(skuItem: widget.item)));
           print(widget.item.id);
         },
       ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 
 class Registration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SnapPeUI().AppBarBig(),
+      appBar: SnapPeUI().appBarBig(),
       body: Container(
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),

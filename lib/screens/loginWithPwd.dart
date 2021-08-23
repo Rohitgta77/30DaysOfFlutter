@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 import 'otp.dart';
@@ -52,7 +52,7 @@ class _LogInWithPwdState extends State<LogInWithPwd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SnapPeUI().AppBarBig(),
+      appBar: SnapPeUI().appBarBig(),
       body: Container(
         height: double.infinity,
         child: SingleChildScrollView(

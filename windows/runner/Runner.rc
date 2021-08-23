@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "A new Flutter project." "\0"
+            VALUE "CompanyName", "Divigo India Private Limited" "\0"
+            VALUE "FileDescription", "A new Snap Pe Merchant App." "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_catalog" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2021 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_catalog.exe" "\0"
-            VALUE "ProductName", "flutter_catalog" "\0"
+            VALUE "InternalName", "Snap Pe Merchant" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2021 com.divigo.snappemerchant. All rights reserved." "\0"
+            VALUE "OriginalFilename", "Snap Pe Merchant.exe" "\0"
+            VALUE "ProductName", "Snap Pe Merchant" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

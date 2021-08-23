@@ -1,10 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
-import 'package:flutter_catalog/utils/snapPeNetworks.dart';
-import 'package:flutter_catalog/utils/snapPeRoutes.dart';
-import 'package:flutter_catalog/utils/snapPeUI.dart';
-import 'package:flutter_catalog/utils/snapPeUtil.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
+import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class Otp extends StatefulWidget {
@@ -83,7 +82,7 @@ class _OtpState extends State<Otp> with CodeAutoFill {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SnapPeUI().AppBarBig(),
+      appBar: SnapPeUI().appBarBig(),
       body: Container(
         height: double.infinity,
         child: SingleChildScrollView(

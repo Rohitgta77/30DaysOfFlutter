@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:snap_pe_merchant/models/unit.dart';
+
 Catalogue catalogueFromJson(String str) => Catalogue.fromJson(json.decode(str));
 
 String catalogueToJson(Catalogue data) => json.encode(data.toJson());
@@ -54,70 +56,70 @@ class Catalogue {
 
 class Sku {
   Sku({
-    required this.status,
-    required this.messages,
-    required this.id,
-    required this.brand,
-    required this.displayName,
-    required this.type,
-    required this.availability,
-    required this.showMrp,
-    required this.mrp,
-    required this.sellingPrice,
-    required this.images,
-    required this.unit,
-    required this.measurement,
-    required this.description,
-    required this.thirdPartySku,
-    required this.length,
-    required this.width,
-    required this.height,
-    required this.weight,
-    required this.moq,
-    required this.gst,
-    required this.hsnSacCode,
-    required this.includedInMrp,
-    required this.discountPercent,
-    required this.variant,
-    required this.skuVariants,
-    required this.isVisible,
-    required this.tags,
-    required this.trackInventory,
-    required this.availableStock,
-    required this.valid,
+    this.brand,
+    this.displayName,
+    this.mrp,
+    this.sellingPrice,
+    this.unit,
+    this.measurement,
+    this.moq,
+    this.discountPercent,
+    this.type,
+    this.status,
+    this.messages,
+    this.id,
+    this.availability,
+    this.showMrp,
+    this.images,
+    this.description,
+    this.thirdPartySku,
+    this.length,
+    this.width,
+    this.height,
+    this.weight,
+    this.gst,
+    this.hsnSacCode,
+    this.includedInMrp,
+    this.variant,
+    this.skuVariants,
+    this.isVisible,
+    this.tags,
+    this.trackInventory,
+    this.availableStock,
+    this.valid,
   });
 
-  String status;
-  List<dynamic> messages;
-  int id;
-  String brand;
-  String displayName;
-  String type;
-  bool availability;
-  bool showMrp;
-  double mrp;
-  double sellingPrice;
-  List<Image> images;
-  Unit unit;
-  String measurement;
+  String? status;
+  List<dynamic>? messages;
+  int? id;
+  String? brand;
+  String? displayName;
+  String? type;
+  bool? availability = true;
+  bool? showMrp = true;
+  double? mrp;
+  double? sellingPrice;
+  List<Image>? images;
+  Unit? unit;
+  String? measurement = "1";
   String? description;
   String? thirdPartySku;
   double? length;
   double? width;
   double? height;
   double? weight;
-  int? moq;
+  int? moq = 1;
   double? gst;
   String? hsnSacCode;
-  bool includedInMrp;
-  double discountPercent;
+  bool? includedInMrp = true;
+  double? discountPercent;
   Variant? variant;
-  List<Sku> skuVariants;
-  bool isVisible;
+  List<Sku>? skuVariants;
+  bool? isVisible = true;
   String? tags;
-  bool trackInventory;
-  int availableStock;
-  bool valid;
+  bool? trackInventory;
+  int? availableStock;
+  bool? valid;
 
   factory Sku.fromJson(Map<String, dynamic> json) => Sku(
         status: json["status"],
@@ -132,8 +134,8 @@ class Sku {
         sellingPrice: json["sellingPrice"],
         images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
         unit: Unit.fromJson(json["unit"]),
-        measurement: json["measurement"],
-        description: json["description"] == null ? null : json["description"],
+        measurement: json["measurement"] ?? "",
+        description: json["description"] ?? "",
         thirdPartySku:
             json["thirdPartySku"] == null ? null : json["thirdPartySku"],
         length: json["length"] == null ? null : json["length"],
@@ -159,54 +161,56 @@ class Sku {
       );
 
   Map<String, dynamic> toJson() => {
-        "status": status,
-        "messages": List<dynamic>.from(messages.map((x) => x)),
         "id": id,
         "brand": brand,
         "displayName": displayName,
         "type": type,
-        "availability": availability,
-        "showMrp": showMrp,
+        "availability": availability ?? true,
+        "showMrp": showMrp ?? true,
         "mrp": mrp,
         "sellingPrice": sellingPrice,
-        "images": List<dynamic>.from(images.map((x) => x.toJson())),
-        "unit": unit.toJson(),
+        "images": images == null
+            ? []
+            : List<dynamic>.from(images!.map((x) => x.toJson())),
+        "unit": unit == null ? null : unit!.toJson(),
         "measurement": measurement,
         "description": description == null ? null : description,
-        "thirdPartySku": thirdPartySku == null ? null : thirdPartySku,
-        "length": length == null ? null : length,
-        "width": width == null ? null : width,
-        "height": height == null ? null : height,
-        "weight": weight == null ? null : weight,
-        "moq": moq == null ? null : moq,
-        "gst": gst == null ? null : gst,
-        "hsnSacCode": hsnSacCode == null ? null : hsnSacCode,
-        "includedInMrp": includedInMrp,
-        "discountPercent": discountPercent,
-        "variant": variant == null ? null : variant!.toJson(),
-        "skuVariants": List<dynamic>.from(skuVariants.map((x) => x.toJson())),
-        "isVisible": isVisible,
-        "tags": tags == null ? null : tags,
-        "trackInventory": trackInventory,
-        "availableStock": availableStock,
-        "valid": valid,
+        // "thirdPartySku": thirdPartySku == null ? null : thirdPartySku,
+        // "length": length == null ? null : length,
+        // "width": width == null ? null : width,
+        // "height": height == null ? null : height,
+        // "weight": weight == null ? null : weight,
+        "moq": moq ?? 1,
+        // "gst": gst == null ? null : gst,
+        // "hsnSacCode": hsnSacCode == null ? null : hsnSacCode,
+        "includedInMrp": includedInMrp ?? true,
+        // "discountPercent": discountPercent,
+        // "variant": variant == null ? null : variant!.toJson(),
+        // "skuVariants": skuVariants == null
+        //     ? null
+        //     : List<dynamic>.from(skuVariants!.map((x) => x.toJson())),
+        "isVisible": isVisible ?? true,
+        // "tags": tags == null ? null : tags,
+        "trackInventory": trackInventory ?? false,
+        "availableStock": availableStock ?? 0,
+        // "valid": valid ?? true,
       };
 }
 
 class Image {
   Image({
-    required this.status,
-    required this.messages,
-    required this.id,
-    required this.imageUrl,
-    required this.imageText,
+    this.status,
+    this.messages,
+    this.id,
+    this.imageUrl,
+    this.imageText,
   });
 
-  String status;
-  List<dynamic> messages;
-  int id;
-  String imageUrl;
-  String imageText;
+  String? status;
+  List<dynamic>? messages;
+  int? id;
+  String? imageUrl;
+  String? imageText;
 
   factory Image.fromJson(Map<String, dynamic> json) => Image(
         status: json["status"],
@@ -218,32 +222,14 @@ class Image {
 
   Map<String, dynamic> toJson() => {
         "status": status,
-        "messages": List<dynamic>.from(messages.map((x) => x)),
+        "messages": List<dynamic>.from(messages!.map((x) => x)),
         "id": id,
         "imageUrl": imageUrl,
         "imageText": imageText,
       };
 }
 
-class Unit {
-  Unit({
-    required this.id,
-    required this.name,
-  });
 
-  int id;
-  String name;
-
-  factory Unit.fromJson(Map<String, dynamic> json) => Unit(
-        id: json["id"],
-        name: json["name"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-      };
-}
 
 class Variant {
   Variant({
@@ -320,3 +306,51 @@ class VariantType {
         "columnName2": columnName2,
       };
 }
+
+
+
+
+
+
+
+
+
+
+
+// Map<String, dynamic> toJson() => {
+//         "status": status,
+//         "messages": [],
+//         "id": id,
+//         "brand": brand,
+//         "displayName": displayName,
+//         "type": type,
+//         "availability": availability ?? true,
+//         "showMrp": showMrp ?? true,
+//         "mrp": mrp,
+//         "sellingPrice": sellingPrice,
+//         "images": images == null
+//             ? null
+//             : List<dynamic>.from(images!.map((x) => x.toJson())),
+//         "unit": unit == null ? null : unit!.toJson(),
+//         "measurement": measurement,
+//         "description": description == null ? null : description,
+//         "thirdPartySku": thirdPartySku == null ? null : thirdPartySku,
+//         "length": length == null ? null : length,
+//         "width": width == null ? null : width,
+//         "height": height == null ? null : height,
+//         "weight": weight == null ? null : weight,
+//         "moq": moq ?? 1,
+//         "gst": gst == null ? null : gst,
+//         "hsnSacCode": hsnSacCode == null ? null : hsnSacCode,
+//         "includedInMrp": includedInMrp ?? true,
+//         "discountPercent": discountPercent,
+//         "variant": variant == null ? null : variant!.toJson(),
+//         "skuVariants": skuVariants == null
+//             ? null
+//             : List<dynamic>.from(skuVariants!.map((x) => x.toJson())),
+//         "isVisible": isVisible ?? true,
+//         "tags": tags == null ? null : tags,
+//         "trackInventory": trackInventory ?? false,
+//         "availableStock": availableStock,
+//         "valid": valid ?? true,
+//       };

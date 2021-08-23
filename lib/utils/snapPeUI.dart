@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_catalog/constants/colorsConstants.dart';
+import 'package:snap_pe_merchant/constants/colorsConstants.dart';
 
 class SnapPeUI {
-  AppBar AppBarBig() {
+  AppBar appBarBig() {
     return AppBar(
       toolbarHeight: 200,
       title: Column(
@@ -11,7 +11,7 @@ class SnapPeUI {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             appBarText("Snap Pe", 30),
-            appBarSubText("~ Your Next Wow ~", 15),
+            appBarSubText("~ Your New Wow ~", 15),
           ]),
       centerTitle: true,
       backwardsCompatibility: false,
@@ -19,16 +19,16 @@ class SnapPeUI {
     );
   }
 
-  AppBar AppBarSmall() {
+  AppBar appBarSmall() {
     return AppBar(
       textTheme: TextTheme(),
       toolbarHeight: 80,
       title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
             appBarText("Snap Pe", 22),
-            appBarSubText("~ Your Next Wow ~", 15),
+            appBarSubText("~ Your New Wow ~", 15),
           ]),
       centerTitle: true,
       actions: [
