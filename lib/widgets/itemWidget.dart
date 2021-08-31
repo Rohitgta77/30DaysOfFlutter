@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
+import 'package:snap_pe_merchant/models/model_catalogue.dart' ;
 import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
 
 class ItemWidget extends StatefulWidget {
-  final i_Catalogue.Sku item;
+  final Sku item;
   const ItemWidget({Key? key, required this.item}) : super(key: key);
 
   @override

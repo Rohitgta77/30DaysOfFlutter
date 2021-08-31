@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:snap_pe_merchant/models/catalogue.dart';
+import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snap_pe_merchant/constants/networkConstants.dart';
@@ -77,8 +77,7 @@ class SnapPeNetworks {
     preferences.setString(NetworkConstants.CLIENT_NAME, clientName);
     preferences.setString(NetworkConstants.PHONE_NO, phoneNo);
     preferences.setString(NetworkConstants.ROLE, role);
-    preferences.setString(
-        NetworkConstants.LIVE_AGENT_USER_ID, liveAgentUserId);
+    preferences.setString(NetworkConstants.LIVE_AGENT_USER_ID, liveAgentUserId);
     preferences.setString(NetworkConstants.TOKEN, token);
   }
 
@@ -122,6 +121,72 @@ class SnapPeNetworks {
       return "";
     }
     Uri url = NetworkConstants.getItems(clientGroupName, page, size);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getItemList: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> getOrderList(
+      int timeFrom, int timeTo, int page, int size) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return "";
+    }
+    Uri url = NetworkConstants.GetAllOrderList_URL(
+        clientGroupName, timeFrom, timeTo, page, size);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getItemList: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      return "";
+    }
+  }
+
+  Future<String> getOrderDetail(int orderId) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      Fluttertoast.showToast(
+          msg: "SomeThing Wrong.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return "";
+    }
+    Uri url = NetworkConstants.GetOrderDetails(clientGroupName, orderId);
 
     var response = await http.get(url,
         headers: {"Content-Type": "application/json", "token": "$token"});

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snap_pe_merchant/models/catalogue.dart';
+import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/widgets/itemWidget.dart';
@@ -18,7 +18,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
   int page = 0, size = 15, totalRecords = 0, pages = 0;
   List<Sku>? itemsList;
   List<Sku>? newItemsList;
-  List<Sku> skuList = [];
+  List<Sku>? skuList;
   List itemsArray = [];
   final scrollController = ScrollController();
   @override
@@ -84,7 +84,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
     //CatalogueModel.items
     skuList =
         List.from(itemsArray).map<Sku>((item) => Sku.fromJson(item)).toList();
-    print(skuList.length);
+    print(skuList!.length);
     setState(() {});
   }
 
@@ -104,12 +104,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
             },
           );
         },
-        child: ListView.builder(
-            controller: scrollController,
-            itemCount: skuList.length,
-            itemBuilder: (context, index) {
-              return ItemWidget(item: skuList[index]);
-            }),
+        child: buildCatalogueView(),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -121,5 +116,28 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
         },
       ),
     );
+  }
+
+  buildCatalogueView() {
+    if (skuList == null) {
+      return Center(
+        child: CupertinoActivityIndicator(radius: 20),
+      );
+    } else if (skuList!.length == 0) {
+      return Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset("assets/images/noCatalogue.png"),
+          Text("No Catalogue")
+        ],
+      ));
+    }
+    return ListView.builder(
+        controller: scrollController,
+        itemCount: skuList!.length,
+        itemBuilder: (context, index) {
+          return ItemWidget(item: skuList![index]);
+        });
   }
 }

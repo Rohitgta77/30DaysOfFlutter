@@ -17,25 +17,19 @@ class _HomeState extends State<Home> {
   int _screenIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var screens = [
       CatalogueScreen(),
-      OrderScreen(),
+       OrderScreen(),
+      ProfileScreen(),     
       LiveAgentScreen(),
       PaymentScreen(),
-      ProfileScreen(),
     ];
 
     return Scaffold(
       appBar: SnapPeUI().appBarSmall(),
-      drawer: Drawer(),
+      //drawer: Drawer(),
       body: screens[_screenIndex],
-      
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _screenIndex,
         unselectedItemColor: Colors.grey,

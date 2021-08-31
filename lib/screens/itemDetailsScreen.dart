@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/constants/colorsConstants.dart';
-import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
-import 'package:snap_pe_merchant/models/category.dart' as i_Category;
-import 'package:snap_pe_merchant/models/unit.dart';
+import 'package:snap_pe_merchant/models/model_catalogue.dart' as i_Catalogue;
+import 'package:snap_pe_merchant/models/model_category.dart' as i_Category;
+import 'package:snap_pe_merchant/models/model_unit.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
@@ -73,7 +73,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
   populateValue() {
     sku = widget.skuItem;
     selectedUnit = sku.unit;
-    print("selected Unit : ${selectedUnit!.name}");
+    //print("selected Unit : ${selectedUnit!.name}");
 
     if (sku.id != null) {
       isNewItem = false;
@@ -135,13 +135,13 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           fontSize: 16.0);
 
       setState(() {
-        i_Catalogue.Image i = i_Catalogue.Image();
+        i_Catalogue.ImageC i = i_Catalogue.ImageC();
         i.id = result["id"];
         i.status = result["status"];
         i.messages = result["messages"];
         i.imageUrl = result["imageUrl"];
         i.imageText = result["imageText"];
-        List<i_Catalogue.Image> list = [i];
+        List<i_Catalogue.ImageC> list = [i];
 
         sku.images = list;
 

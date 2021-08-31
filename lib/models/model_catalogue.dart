@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:snap_pe_merchant/models/unit.dart';
+import 'package:snap_pe_merchant/models/model_unit.dart';
 
 Catalogue catalogueFromJson(String str) => Catalogue.fromJson(json.decode(str));
 
@@ -99,7 +99,7 @@ class Sku {
   bool? showMrp = true;
   double? mrp;
   double? sellingPrice;
-  List<Image>? images;
+  List<ImageC>? images;
   Unit? unit;
   String? measurement = "1";
   String? description;
@@ -132,7 +132,7 @@ class Sku {
         showMrp: json["showMrp"],
         mrp: json["mrp"],
         sellingPrice: json["sellingPrice"],
-        images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
+        images: List<ImageC>.from(json["images"].map((x) => ImageC.fromJson(x))),
         unit: Unit.fromJson(json["unit"]),
         measurement: json["measurement"] ?? "",
         description: json["description"] ?? "",
@@ -197,8 +197,8 @@ class Sku {
       };
 }
 
-class Image {
-  Image({
+class ImageC {
+  ImageC({
     this.status,
     this.messages,
     this.id,
@@ -212,7 +212,7 @@ class Image {
   String? imageUrl;
   String? imageText;
 
-  factory Image.fromJson(Map<String, dynamic> json) => Image(
+  factory ImageC.fromJson(Map<String, dynamic> json) => ImageC(
         status: json["status"],
         messages: List<dynamic>.from(json["messages"].map((x) => x)),
         id: json["id"],

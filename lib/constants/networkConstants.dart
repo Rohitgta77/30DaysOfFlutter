@@ -1,3 +1,16 @@
+enum UrlName {
+  Get_All_Communities,
+  Get_Order_List,
+  Get_All_Order_List,
+  Get_Client_Properties,
+  Get_Order_Details,
+  Put_UpdateOrderStatus,
+  Put_UpdatePaymentStatus,
+  Get_All_Application,
+  Get_Single_ChatData,
+  Get_All_ChatData
+}
+
 class NetworkConstants {
   static const String CLIENT_GROUP_NAME = "clientGroupName";
   static const String CLIENT_NAME = "clientName";
@@ -141,21 +154,51 @@ class NetworkConstants {
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/skus/images?skuId=707019
   }
 
-  // static String GetQRCodeUrl(String ApplicationNo, String UserId, String OrderId) {
-  //     return SnapPe_SERVICES_EP + "applications/" + ApplicationNo + "/users/" + UserId + "/upi-code/" + UserId + "_" + OrderId + ".png";
+  static Uri GetAllOrderList_URL(
+      String clientGroupName, int timeFrom, int timeTo, int page, int size) {
+    String finalURL = MERCHANTS_EP +
+        clientGroupName +
+        "/divigo-orders?timefrom=$timeFrom&timeto=$timeTo&page=$page&size=$size&sortBy=createdOn&sortOrder=DESC";
+    return Uri.parse(finalURL); //&page="+page+"&size=20
+
+    //https://retail.snap.pe/snappe-services/rest/v1/merchants/JustLaid/divigo-orders?timefrom=1623647998&timeto=1624339197&page=1&size=20&sortBy=createdOn&sortOrder=DESC
+  }
+
+  static Uri GetOrderDetails(String clientGroupName, int orderId) {
+    String finalURL =
+        MERCHANTS_EP + clientGroupName + "/divigo-orders/$orderId";
+    return Uri.parse(finalURL); //&page="+page+"&size=20
+
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/divigo-orders/755362
+  }
+
+  // static String GetUrl(UrlName urlName, String clientGroupName) {
+  //     //https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}";
+  //     //http://44.238.171.136:8082/snappe-services/{client_Group_name}
+  //     String finalURL = MERCHANTS_EP + clientGroupName;
+
+  //     switch (urlName) {
+  //         case  UrlName.Get_All_Communities:
+  //             return finalURL + communities_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/communities";
+  //         case UrlName.Get_Order_List:
+  //             return finalURL + orders_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/orders?communityName=";
+  //         case UrlName.Get_Client_Properties:
+  //             return finalURL + properties_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/properties";
+  //         case UrlName.Get_Order_Details:
+  //             return finalURL + orderDetails_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/delivery/divigo-orders/details/";
+  //         case UrlName.Put_UpdateOrderStatus:
+  //             return finalURL + updateOrderStatus_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/divigo-orders?orderStatus=";
+  //         case UrlName.Put_UpdatePaymentStatus:
+  //             return finalURL + updatePaymentStatus_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/divigo-orders?orderStatus=DELIVERED&paymentStatus=COMPLETED";
+  //         case UrlName.Get_All_Application:
+  //             return finalURL + application_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/applications";
+  //         default:
+  //             return "";
+  //     }
   // }
 
-  // enum urlName {
-  //     Get_All_Communities,
-  //     Get_Order_List,
-  //     Get_All_Order_List,
-  //     Get_Client_Properties,
-  //     Get_Order_Details,
-  //     Put_UpdateOrderStatus,
-  //     Put_UpdatePaymentStatus,
-  //     Get_All_Application,
-  //     Get_Single_ChatData,
-  //     Get_All_ChatData
+  // static String GetQRCodeUrl(String ApplicationNo, String UserId, String OrderId) {
+  //     return SnapPe_SERVICES_EP + "applications/" + ApplicationNo + "/users/" + UserId + "/upi-code/" + UserId + "_" + OrderId + ".png";
   // }
 
   // static const String communities_URL = "/communities";
@@ -194,43 +237,12 @@ class NetworkConstants {
   //     return LIVEAGENT_EP + appName + "/" + destinationId + "";
   // }
 
-  // static String GetAllOrderList_URL(String clientGroupName, String timeFrom, String timeTo, int page, int size ){
-  //     String finalURL = MERCHANTS_EP + clientGroupName +"/divigo-orders?timefrom="+timeFrom+"&timeto="+timeTo+"&page="+page+"&size="+size+"&sortBy=createdOn&sortOrder=DESC";
-  //     return finalURL ;//&page="+page+"&size=20
-  //     //https://retail.snap.pe/snappe-services/rest/v1/merchants/JustLaid/divigo-orders?timefrom=1623647998&timeto=1624339197&page=1&size=20&sortBy=createdOn&sortOrder=DESC
-  // }
-
   // static String SearchOrder_URL(String clientGroupName, String timeFrom, String timeTo, int page, int size ,String searchKeyword){
   //     page = 0;
   //     size = 20;
   //     String finalURL = MERCHANTS_EP + clientGroupName +"/divigo-orders?timefrom="+timeFrom+"&timeto="+timeTo+"&page="+page+"&size="+size+"&keyword="+searchKeyword+"&sortBy=createdOn&sortOrder=DESC";
   //     return finalURL ;//&page="+page+"&size=20
   //     //https://retail.snap.pe/snappe-services/rest/v1/merchants/JustLaid/divigo-orders?timefrom=1623964229&timeto=1624655428&page=0&size=20&keyword=47&sortBy=createdOn&sortOrder=DESC
-  // }
-
-  // static String GetUrl(urlName urlName, String clientGroupName) {
-  //     //https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}";
-  //     //http://44.238.171.136:8082/snappe-services/{client_Group_name}
-  //     String finalURL = MERCHANTS_EP + clientGroupName;
-
-  //     switch (urlName) {
-  //         case Get_All_Communities:
-  //             return finalURL + communities_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/communities";
-  //         case Get_Order_List:
-  //             return finalURL + orders_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/orders?communityName=";
-  //         case Get_Client_Properties:
-  //             return finalURL + properties_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/properties";
-  //         case Get_Order_Details:
-  //             return finalURL + orderDetails_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/delivery/divigo-orders/details/";
-  //         case Put_UpdateOrderStatus:
-  //             return finalURL + updateOrderStatus_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/divigo-orders?orderStatus=";
-  //         case Put_UpdatePaymentStatus:
-  //             return finalURL + updatePaymentStatus_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/divigo-orders?orderStatus=DELIVERED&paymentStatus=COMPLETED";
-  //         case Get_All_Application:
-  //             return finalURL + application_URL;//https://retail.snap.pe/snappe-services/rest/v1/merchants/{client_Group_name}/applications";
-  //         default:
-  //             return "";
-  //     }
   // }
 
   // static const String PREF_NAME = "SnapBasketDelivery";

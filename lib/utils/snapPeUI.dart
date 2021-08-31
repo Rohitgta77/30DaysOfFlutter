@@ -25,24 +25,25 @@ class SnapPeUI {
       toolbarHeight: 80,
       title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, 
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             appBarText("Snap Pe", 22),
             appBarSubText("~ Your New Wow ~", 15),
           ]),
-      centerTitle: true,
-      actions: [
-        PopupMenuButton(
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(child: Text("Profile")),
-              PopupMenuItem(child: Text("Logout"))
-            ];
-          },
-        ),
-      ],
+      centerTitle: true,      
     );
   }
+
+  // actions: [
+      //   PopupMenuButton(
+      //     itemBuilder: (context) {
+      //       return [
+      //         PopupMenuItem(child: Text("Profile")),
+      //         PopupMenuItem(child: Text("Logout"))
+      //       ];
+      //     },
+      //   ),
+      // ],
 
   AppBar nAppBar(String mtitle) {
     return AppBar(
@@ -107,14 +108,14 @@ class SnapPeUI {
         icon: Icon(Icons.outbox_rounded),
         label: "Orders",
       ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.chat),
-        label: "Live Agent",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.payment),
-        label: "Payment",
-      ),
+      // BottomNavigationBarItem(
+      //   icon: Icon(Icons.chat),
+      //   label: "Live Agent",
+      // ),
+      // BottomNavigationBarItem(
+      //   icon: Icon(Icons.payment),
+      //   label: "Payment",
+      // ),
       BottomNavigationBarItem(
         icon: Icon(Icons.account_box),
         label: "Account",

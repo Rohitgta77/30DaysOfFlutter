@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.divigo.snappemerchant">
+    
    <application
-        android:label="snap_pe_merchant"
-        android:icon="@mipmap/ic_launcher">
+        android:label="SnapPe Merchant"
+        android:icon="@mipmap/launcher_icon">
         
         <activity
             android:name=".MainActivity"

@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:snap_pe_merchant/models/catalogue.dart' as i_Catalogue;
+import 'package:snap_pe_merchant/models/model_catalogue.dart' as i_Catalogue;
 import 'package:image_picker/image_picker.dart';
 //import 'package:video_player/video_player.dart';
 
 class ImageScreen extends StatefulWidget {
-  final List<i_Catalogue.Image>? imageList;
+  final List<i_Catalogue.ImageC>? imageList;
   const ImageScreen(this.imageList) : super();
 
   @override
