@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/constants/colorsConstants.dart';
-import 'package:snap_pe_merchant/screens/liveAgentScreen.dart';
-import 'package:snap_pe_merchant/screens/orderScreen.dart';
-import 'package:snap_pe_merchant/screens/paymentScreen.dart';
-import 'package:snap_pe_merchant/screens/profileScreen.dart';
+import 'package:snap_pe_merchant/screens/chat/liveAgentScreen.dart';
+import 'package:snap_pe_merchant/screens/payment/paymentScreen.dart';
+import 'package:snap_pe_merchant/screens/profile/profileScreen.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 
-import 'catalogueScreen.dart';
+import 'catalogue/catalogueScreen.dart';
+import 'order/orderScreen.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,8 +20,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var screens = [
       CatalogueScreen(),
-       OrderScreen(),
-      ProfileScreen(),     
+      OrderScreen(),
+      ProfileScreen(),
       LiveAgentScreen(),
       PaymentScreen(),
     ];

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/models/model_category.dart';
-import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+
+import 'itemDetailsScreen.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);

@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart' ;
-import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
+
+import 'itemDetailsScreen.dart';
 
 class ItemWidget extends StatefulWidget {
   final Sku item;

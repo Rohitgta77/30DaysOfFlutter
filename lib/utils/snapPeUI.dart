@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snap_pe_merchant/constants/colorsConstants.dart';
 
 class SnapPeUI {
@@ -30,20 +31,20 @@ class SnapPeUI {
             appBarText("Snap Pe", 22),
             appBarSubText("~ Your New Wow ~", 15),
           ]),
-      centerTitle: true,      
+      centerTitle: true,
     );
   }
 
   // actions: [
-      //   PopupMenuButton(
-      //     itemBuilder: (context) {
-      //       return [
-      //         PopupMenuItem(child: Text("Profile")),
-      //         PopupMenuItem(child: Text("Logout"))
-      //       ];
-      //     },
-      //   ),
-      // ],
+  //   PopupMenuButton(
+  //     itemBuilder: (context) {
+  //       return [
+  //         PopupMenuItem(child: Text("Profile")),
+  //         PopupMenuItem(child: Text("Logout"))
+  //       ];
+  //     },
+  //   ),
+  // ],
 
   AppBar nAppBar(String mtitle) {
     return AppBar(
@@ -144,4 +145,26 @@ class SnapPeUI {
   //     ],
   //   );
   // }
+
+  toastError({String errorMessage = "Something went wrong."}) {
+    Fluttertoast.showToast(
+        msg: errorMessage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
+  toastSuccess({String successMessage = "Operation Successfully performed."}) {
+    Fluttertoast.showToast(
+        msg: successMessage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 }

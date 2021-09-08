@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'model_order_Details.dart';
+import 'model_catalogue.dart';
 
 OrderModel orderModelFromJson(String str) =>
     OrderModel.fromJson(json.decode(str));
@@ -31,7 +31,9 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
         status: json["status"],
         messages: List<dynamic>.from(json["messages"].map((x) => x)),
-        orders: List<Order>.from(json["orders"].map((x) => Order.fromJson(x))),
+        orders: json["orders"] == null
+            ? []
+            : List<Order>.from(json["orders"].map((x) => Order.fromJson(x))),
         pages: json["pages"],
         totalRecords: json["totalRecords"],
       );
@@ -88,6 +90,23 @@ class Order {
     this.lastUpdatedBy,
     this.isPickup,
     this.merchantRemarks,
+    this.addressLine1,
+    this.addressType,
+    this.alternativeEmailAddress,
+    this.alternativeNo1,
+    this.communityName,
+    this.countryCode,
+    this.guid,
+    this.latitude,
+    this.longitude,
+    this.parentCustomerId,
+    this.password,
+    this.phoneNo,
+    this.pincode,
+    this.primaryEmailAddress,
+    this.token,
+    this.upiId,
+    this.userName,
   });
 
   String? status;
@@ -119,7 +138,7 @@ class Order {
   String? createdOn;
   String? houseNo;
   String? deliveryTime;
-  List<OrderDetail>? orderDetails;
+  List<Sku>? orderDetails;
   dynamic promotion;
   dynamic shipment;
   dynamic pricelist;
@@ -130,6 +149,24 @@ class Order {
   String? lastUpdatedBy;
   bool? isPickup;
   String? merchantRemarks;
+
+  String? addressLine1;
+  String? addressType;
+  dynamic alternativeEmailAddress;
+  dynamic alternativeNo1;
+  String? communityName;
+  dynamic countryCode;
+  String? guid;
+  dynamic latitude;
+  dynamic longitude;
+  dynamic parentCustomerId;
+  dynamic password;
+  String? phoneNo;
+  dynamic pincode;
+  dynamic primaryEmailAddress;
+  dynamic token;
+  dynamic upiId;
+  dynamic userName;
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
         status: json["status"],
@@ -167,8 +204,7 @@ class Order {
         deliveryTime: json["deliveryTime"],
         orderDetails: json["orderDetails"] == null
             ? null
-            : List<OrderDetail>.from(
-                json["orderDetails"].map((x) => OrderDetail.fromJson(x))),
+            : List<Sku>.from(json["orderDetails"].map((x) => Sku.fromJson(x))),
         promotion: json["promotion"],
         shipment: json["shipment"],
         pricelist: json["pricelist"],
@@ -182,6 +218,23 @@ class Order {
         isPickup: json["isPickup"] == null ? null : json["isPickup"],
         merchantRemarks:
             json["merchantRemarks"] == null ? null : json["merchantRemarks"],
+        addressLine1: json["addressLine1"],
+        addressType: json["addressType"],
+        alternativeEmailAddress: json["alternativeEmailAddress"],
+        alternativeNo1: json["alternativeNo1"],
+        communityName: json["communityName"],
+        countryCode: json["countryCode"],
+        guid: json["guid"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
+        parentCustomerId: json["parentCustomerId"],
+        password: json["password"],
+        phoneNo: json["phoneNo"],
+        pincode: json["pincode"],
+        primaryEmailAddress: json["primaryEmailAddress"],
+        token: json["token"],
+        upiId: json["upiId"],
+        userName: json["userName"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -228,5 +281,22 @@ class Order {
         "lastUpdatedBy": lastUpdatedBy == null ? null : lastUpdatedBy,
         "isPickup": isPickup == null ? null : isPickup,
         "merchantRemarks": merchantRemarks == null ? null : merchantRemarks,
+        "addressLine1": addressLine1,
+        "addressType": addressType,
+        "alternativeEmailAddress": alternativeEmailAddress,
+        "alternativeNo1": alternativeNo1,
+        "communityName": communityName,
+        "countryCode": countryCode,
+        "guid": guid,
+        "latitude": latitude,
+        "longitude": longitude,
+        "parentCustomerId": parentCustomerId,
+        "password": password,
+        "phoneNo": phoneNo,
+        "pincode": pincode,
+        "primaryEmailAddress": primaryEmailAddress,
+        "token": token,
+        "upiId": upiId,
+        "userName": userName,
       };
 }

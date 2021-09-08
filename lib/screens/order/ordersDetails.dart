@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:snap_pe_merchant/models/model_order_Details.dart';
 import 'package:snap_pe_merchant/models/model_orders.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';

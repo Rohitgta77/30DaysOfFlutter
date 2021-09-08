@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/constants/colorsConstants.dart';
-import 'package:snap_pe_merchant/screens/Registration.dart';
-import 'package:snap_pe_merchant/screens/categoryScreen.dart';
 import 'package:snap_pe_merchant/screens/home.dart';
-import 'package:snap_pe_merchant/screens/login.dart';
-import 'package:snap_pe_merchant/screens/loginWithPwd.dart';
-import 'package:snap_pe_merchant/screens/splashScreen.dart';
 import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'screens/catalogue/categoryScreen.dart';
+import 'screens/entry/Registration.dart';
+import 'screens/entry/login.dart';
+import 'screens/entry/loginWithPwd.dart';
+import 'screens/entry/splashScreen.dart';
 
 void main(List<String> args) {
   WidgetsFlutterBinding.ensureInitialized();

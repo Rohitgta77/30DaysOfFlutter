@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushNamed(context, SnapPeRoutes.homeRoute);
     } else {
       Navigator.pop(context);
-      Navigator.pushNamed(context, SnapPeRoutes.loginRoute);
+      Navigator.pushNamed(context, SnapPeRoutes.loginWithPwdRoute);
     }
   }
 

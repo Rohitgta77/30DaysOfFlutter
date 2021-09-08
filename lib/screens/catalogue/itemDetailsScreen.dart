@@ -324,8 +324,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           sku.description = descriptionController.text;
           sku.type = categoryController.text;
 
-          bool result =
-              await SnapPeNetworks().saveItem(context, sku, isNewItem);
+          bool result = await SnapPeNetworks().saveItem(sku, isNewItem);
           if (!result) {
             return;
           }

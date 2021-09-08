@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/models/model_orders.dart';
-import 'package:snap_pe_merchant/screens/ordersDetails.dart';
+
+import 'ordersDetails.dart';
 
 class OrderWidget extends StatelessWidget {
   final Order order;

@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
-import 'package:snap_pe_merchant/screens/itemDetailsScreen.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
-import 'package:snap_pe_merchant/widgets/itemWidget.dart';
+import 'package:snap_pe_merchant/screens/catalogue/itemWidget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'itemDetailsScreen.dart';
 
 class CatalogueScreen extends StatefulWidget {
   const CatalogueScreen({Key? key}) : super(key: key);
@@ -73,7 +74,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
   // }
 
   _loadData() async {
-    final resData = await SnapPeNetworks().getItemList(context, page, size);
+    final resData = await SnapPeNetworks().getItemList(page, size);
     if (resData == "") {
       return;
     }
@@ -107,7 +108,10 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
         child: buildCatalogueView(),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () {
           Navigator.push(
               context,

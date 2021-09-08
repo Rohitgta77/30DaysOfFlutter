@@ -87,6 +87,13 @@ class Sku {
     this.trackInventory,
     this.availableStock,
     this.valid,
+    this.quantity,
+    this.totalAmount,
+    this.skuId,
+    this.discountValue,
+    this.itemStatus,
+    this.remarks,
+    this.size,
   });
 
   String? status;
@@ -120,6 +127,14 @@ class Sku {
   bool? trackInventory;
   int? availableStock;
   bool? valid;
+  int? quantity;
+  double? totalAmount;
+  //
+  int? skuId;
+  String? itemStatus;
+  String? remarks;
+  int? discountValue;
+  String? size;
 
   factory Sku.fromJson(Map<String, dynamic> json) => Sku(
         status: json["status"],
@@ -132,7 +147,8 @@ class Sku {
         showMrp: json["showMrp"],
         mrp: json["mrp"],
         sellingPrice: json["sellingPrice"],
-        images: List<ImageC>.from(json["images"].map((x) => ImageC.fromJson(x))),
+        images:
+            List<ImageC>.from(json["images"].map((x) => ImageC.fromJson(x))),
         unit: Unit.fromJson(json["unit"]),
         measurement: json["measurement"] ?? "",
         description: json["description"] ?? "",
@@ -158,6 +174,31 @@ class Sku {
         trackInventory: json["trackInventory"],
         availableStock: json["availableStock"],
         valid: json["valid"],
+        quantity: json["quantity"],
+        totalAmount: json["totalAmount"],
+      );
+
+  factory Sku.fromJsonForOrderDetail(Map<String, dynamic> json) => Sku(
+        id: json["id"],
+        skuId: json["skuId"] ?? json["id"],
+        sellingPrice: json["sellingPrice"],
+        brand: json["brand"],
+        type: json["type"],
+        unit: Unit.fromJson(json["unit"]),
+        quantity: json["quantity"],
+        mrp: json["mrp"],
+        itemStatus: json["itemStatus"] ?? "ACTIVE",
+        remarks: json["remarks"],
+        measurement: json["measurement"],
+        images:
+            List<ImageC>.from(json["images"].map((x) => ImageC.fromJson(x))),
+        displayName: json["displayName"],
+        totalAmount: json["totalAmount"],
+        thirdPartySku: json["thirdPartySku"] ?? "0",
+        discountPercent: json["discountPercent"].toDouble(),
+        discountValue: json["discountValue"] ?? 0,
+        gst: json["gst"] ?? 0,
+        size: json["size"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -194,6 +235,31 @@ class Sku {
         "trackInventory": trackInventory ?? false,
         "availableStock": availableStock ?? 0,
         // "valid": valid ?? true,
+        "quantity": quantity,
+        "totalAmount": totalAmount,
+      };
+  Map<String, dynamic> toJsonFororderDetail() => {
+        "id": id,
+        "skuId": skuId,
+        "sellingPrice": sellingPrice,
+        "brand": brand,
+        "type": type,
+        "unit": unit == null ? null : unit!.toJson(),
+        "quantity": quantity,
+        "mrp": mrp,
+        "itemStatus": itemStatus ?? "ACTIVE",
+        "remarks": remarks,
+        "measurement": measurement,
+        "images": images == null
+            ? []
+            : List<dynamic>.from(images!.map((x) => x.toJson())),
+        "displayName": displayName,
+        "totalAmount": totalAmount,
+        "thirdPartySku": thirdPartySku ?? 0,
+        "discountPercent": discountPercent,
+        "discountValue": discountValue ?? 0,
+        "gst": gst ?? 0,
+        "size": size ?? "0",
       };
 }
 
@@ -228,8 +294,6 @@ class ImageC {
         "imageText": imageText,
       };
 }
-
-
 
 class Variant {
   Variant({

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
+import 'package:snap_pe_merchant/models/model_create_order.dart';
+import 'package:snap_pe_merchant/models/model_item.dart';
+import 'package:snap_pe_merchant/models/model_orders.dart';
+import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snap_pe_merchant/constants/networkConstants.dart';
 import 'package:snap_pe_merchant/constants/sharedPrefsConstants.dart';
 import 'package:http/http.dart' as http;
@@ -21,14 +23,8 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return true;
     } else {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong. ${response.statusCode}",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return false;
     }
   }
@@ -46,6 +42,8 @@ class SnapPeNetworks {
       _saveUserInfo(response);
       return true;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return false;
     }
   }
@@ -100,24 +98,19 @@ class SnapPeNetworks {
       _saveUserInfo(response);
       return true;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return false;
     }
   }
 
-  Future<String> getItemList(BuildContext context, int page, int size) async {
+  Future<String> getItemList(int page, int size) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return "";
     }
     Uri url = NetworkConstants.getItems(clientGroupName, page, size);
@@ -132,6 +125,8 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }
@@ -143,17 +138,10 @@ class SnapPeNetworks {
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return "";
     }
-    Uri url = NetworkConstants.GetAllOrderList_URL(
+    Uri url = NetworkConstants.getAllOrderList(
         clientGroupName, timeFrom, timeTo, page, size);
 
     var response = await http.get(url,
@@ -166,6 +154,8 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }
@@ -176,17 +166,10 @@ class SnapPeNetworks {
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return "";
     }
-    Uri url = NetworkConstants.GetOrderDetails(clientGroupName, orderId);
+    Uri url = NetworkConstants.getOrderDetails(clientGroupName, orderId);
 
     var response = await http.get(url,
         headers: {"Content-Type": "application/json", "token": "$token"});
@@ -198,24 +181,19 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }
 
-  Future<bool> saveItem(BuildContext context, Sku item, bool isNewItem) async {
+  Future<bool> saveItem(Sku item, bool isNewItem) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return false;
     }
     Uri url = NetworkConstants.updateItem(clientGroupName, item.id.toString());
@@ -239,24 +217,12 @@ class SnapPeNetworks {
     print(' Body = $resbody');
 
     if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-          msg: "your items edited successfully.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI()
+          .toastSuccess(successMessage: "your items edited successfully.");
       return true;
     } else {
-      Fluttertoast.showToast(
-          msg: "Something went Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return false;
     }
   }
@@ -267,14 +233,7 @@ class SnapPeNetworks {
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return "";
     }
     Uri url = NetworkConstants.getCategory(clientGroupName);
@@ -289,6 +248,8 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }
@@ -299,14 +260,7 @@ class SnapPeNetworks {
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
     var token = preferences.getString(NetworkConstants.TOKEN);
     if (clientGroupName == null) {
-      Fluttertoast.showToast(
-          msg: "SomeThing Wrong.",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      SnapPeUI().toastError();
       return "";
     }
     Uri url = NetworkConstants.getUnit(clientGroupName);
@@ -321,6 +275,8 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       return response.body;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }
@@ -356,6 +312,110 @@ class SnapPeNetworks {
 
       return response.data;
     } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return "";
+    }
+  }
+
+  Future getConsumer(String phoneNo) async {
+    Uri url = NetworkConstants.getConsumer(phoneNo);
+
+    var response = await http.get(url);
+
+    print('Request getConsumer: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      print("success");
+      return response.body;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return "";
+    }
+  }
+
+  Future<List<Sku>> itemsSuggestionsCallback(String pattern) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+
+    Uri url = NetworkConstants.getItemsSuggestion(clientGroupName!, pattern);
+
+    var response = await http.get(url);
+
+    print('Request itemsSuggestionsCallback: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      print("success");
+      ItemModel itemModel = itemFromJson(response.body);
+
+      return itemModel.skuList == null ? [] : itemModel.skuList!;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return [];
+    }
+  }
+
+  Future<CreateOrderModel?> createNewOrder(CreateOrderModel order) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      SnapPeUI().toastError();
+      return null;
+    }
+    order.merchantName = clientGroupName;
+    Uri url = NetworkConstants.createNewOrder(clientGroupName);
+    var resbody = createOrderModelToJson(order);
+
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json", "token": "$token"},
+        body: resbody);
+
+    print('Request createNewOrder: $url');
+    print('Response status: ${response.statusCode}');
+    print('Body = $resbody');
+
+    if (response.statusCode == 200) {
+      SnapPeUI()
+          .toastSuccess(successMessage: "your order placed successfully.");
+      CreateOrderModel orderModel = createOrderModelFromJson(response.body);
+      return orderModel;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return null;
+    }
+  }
+
+  getDeliveryTime(String communityName) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    Uri url =
+        NetworkConstants.getDeliveryOption(clientGroupName!, communityName);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getDeliveryTime: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      print("success");
+      return response.body;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
     }
   }

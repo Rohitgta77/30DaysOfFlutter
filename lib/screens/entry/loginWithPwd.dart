@@ -94,7 +94,8 @@ class _LogInWithPwdState extends State<LogInWithPwd> {
                       },
                       child: Text(
                         "Log In",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                     SizedBox(height: 30),
