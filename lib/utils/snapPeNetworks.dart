@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/models/model_create_order.dart';
 import 'package:snap_pe_merchant/models/model_item.dart';
-import 'package:snap_pe_merchant/models/model_orders.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
 import 'package:snap_pe_merchant/constants/networkConstants.dart';

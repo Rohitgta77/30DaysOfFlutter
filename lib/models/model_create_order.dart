@@ -5,7 +5,6 @@
 import 'dart:convert';
 
 import 'model_catalogue.dart';
-import 'model_unit.dart';
 
 CreateOrderModel createOrderModelFromJson(String str) =>
     CreateOrderModel.fromJson(json.decode(str));

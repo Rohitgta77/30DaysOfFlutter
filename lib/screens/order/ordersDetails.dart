@@ -130,7 +130,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       orderDate = DateFormat().format(tempDate);
     }
     return AppBar(
-      textTheme: TextTheme(),
       toolbarHeight: 80,
       actions: [
         IconButton(

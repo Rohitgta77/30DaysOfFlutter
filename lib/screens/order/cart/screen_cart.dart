@@ -5,7 +5,6 @@ import 'package:snap_pe_merchant/models/model_Consumer.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/models/model_create_order.dart';
 import 'package:snap_pe_merchant/models/model_delivery_schedule.dart';
-import 'package:snap_pe_merchant/models/model_orders.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 
@@ -21,7 +20,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   List<Sku> skuList = [];
-  int _itemCount = 1;
 
   @override
   void initState() {
@@ -67,7 +65,6 @@ class _CartScreenState extends State<CartScreen> {
 
   _buildAppBar() {
     return AppBar(
-      textTheme: TextTheme(),
       toolbarHeight: 80,
       title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SnapPeUI().appBarText("Create New Order", 22),

@@ -55,6 +55,6 @@ class _WidgetSelectedItemState extends State<WidgetSelectedItem> {
         ),
       ),
     );
-    ;
+    
   }
 }

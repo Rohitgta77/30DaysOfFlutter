@@ -15,14 +15,12 @@ class SnapPeUI {
             appBarSubText("~ Your New Wow ~", 15),
           ]),
       centerTitle: true,
-      backwardsCompatibility: false,
       systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: kPrimaryColor),
     );
   }
 
   AppBar appBarSmall() {
     return AppBar(
-      textTheme: TextTheme(),
       toolbarHeight: 80,
       title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
