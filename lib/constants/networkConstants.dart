@@ -188,6 +188,16 @@ class NetworkConstants {
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/web/skus/t?mode=mobile
   }
 
+static Uri getCustomerSuggestion(String clientGroupName, String pattern) {
+    String finalURL =
+        MERCHANTS_EP + clientGroupName + "/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC";
+    return Uri.parse(finalURL);
+
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC
+  }
+  
+
+
   static Uri createNewOrder(String clientGroupName) {
     String finalURL = MERCHANTS_EP + clientGroupName + "/web/snappe-order";
     return Uri.parse(finalURL);

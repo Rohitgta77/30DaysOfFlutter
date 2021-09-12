@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snap_pe_merchant/models/model_Consumer.dart';
 import 'package:snap_pe_merchant/models/model_create_order.dart';
+import 'package:snap_pe_merchant/models/model_customer.dart';
 import 'package:snap_pe_merchant/models/model_orders.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/screens/order/orderWidget.dart';
@@ -46,22 +48,43 @@ class _OrderScreenState extends State<OrderScreen> {
 
   createAlertDialog() {
     final phoneController = TextEditingController();
+    final serachController = TextEditingController();
     phoneController.text = "9026744092"; //test
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text("Enter Customer Mobile / Whatsapp Number"),
-          content: TextField(
-            controller: phoneController,
-            autofocus: true,
-            keyboardType: TextInputType.phone,
-            maxLength: 10,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                prefix: Text("+91 "),
-                labelText: 'Mobile Number',
-                hintText: 'Enter Mobile Number'),
+          content: Column(
+            children: [
+              TextField(
+                controller: phoneController,
+                autofocus: true,
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    prefix: Text("+91 "),
+                    labelText: 'Mobile Number',
+                    hintText: 'Enter Mobile Number'),
+              ),
+              TypeAheadField(
+              textFieldConfiguration: TextFieldConfiguration(
+                  controller: serachController,
+                  decoration: InputDecoration(labelText: "Search Items")),
+              suggestionsCallback: (pattern) async =>
+                  await SnapPeNetworks().customerSuggestionsCallback(pattern),
+              itemBuilder: (context, CustomerModel customer) {
+                return ListTile(                 
+                  title: Text("${customer.customerName}"),
+                 
+                );
+              },
+              onSuggestionSelected: (suggestion) {
+                print(suggestion);
+              },
+            ),
+            ],
           ),
           actions: [
             MaterialButton(

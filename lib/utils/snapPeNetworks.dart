@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
 import 'package:snap_pe_merchant/models/model_create_order.dart';
+import 'package:snap_pe_merchant/models/model_customer.dart';
 import 'package:snap_pe_merchant/models/model_item.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
@@ -354,6 +355,32 @@ class SnapPeNetworks {
       ItemModel itemModel = itemFromJson(response.body);
 
       return itemModel.skuList == null ? [] : itemModel.skuList!;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return [];
+    }
+  }
+
+  Future<List<CustomerModel>> customerSuggestionsCallback(
+      String pattern) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+
+    Uri url = NetworkConstants.getCustomerSuggestion(clientGroupName!, pattern);
+
+    var response = await http.get(url);
+
+    print('Request customerSuggestionsCallback: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+
+    if (response.statusCode == 200) {
+      print("success");
+      List<CustomerModel> itemModel = customerModelFromJson(response.body);
+
+      return itemModel.isEmpty ? [] : itemModel;
     } else {
       SnapPeUI()
           .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
