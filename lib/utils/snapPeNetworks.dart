@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
-import 'package:snap_pe_merchant/models/model_create_order.dart';
-import 'package:snap_pe_merchant/models/model_customer.dart';
+import 'package:snap_pe_merchant/models/model_order_summary.dart';
 import 'package:snap_pe_merchant/models/model_item.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 import 'package:snap_pe_merchant/utils/snapPeUtil.dart';
@@ -362,15 +361,16 @@ class SnapPeNetworks {
     }
   }
 
-  Future<List<CustomerModel>> customerSuggestionsCallback(
+  Future<List<OrderSummaryModel>> customerSuggestionsCallback(
       String pattern) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
-
+    var token = preferences.getString(NetworkConstants.TOKEN);
     Uri url = NetworkConstants.getCustomerSuggestion(clientGroupName!, pattern);
 
-    var response = await http.get(url);
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
 
     print('Request customerSuggestionsCallback: $url');
     print('Response status: ${response.statusCode}');
@@ -378,9 +378,13 @@ class SnapPeNetworks {
 
     if (response.statusCode == 200) {
       print("success");
-      List<CustomerModel> itemModel = customerModelFromJson(response.body);
+      print(response.body);
+      var data = json.decode(response.body);
+      var orderSummaryArray = data["orders"];
+      List<OrderSummaryModel> osList =List<OrderSummaryModel>.from(orderSummaryArray.map((x)=>OrderSummaryModel.fromJson(x))) ;
 
-      return itemModel.isEmpty ? [] : itemModel;
+
+      return osList.length == 0 ?[]:osList;
     } else {
       SnapPeUI()
           .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
@@ -388,7 +392,7 @@ class SnapPeNetworks {
     }
   }
 
-  Future<CreateOrderModel?> createNewOrder(CreateOrderModel order) async {
+  Future<OrderSummaryModel?> createNewOrder(OrderSummaryModel order) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
         preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
@@ -399,7 +403,7 @@ class SnapPeNetworks {
     }
     order.merchantName = clientGroupName;
     Uri url = NetworkConstants.createNewOrder(clientGroupName);
-    var resbody = createOrderModelToJson(order);
+    var resbody = orderSummaryModelToJson(order);
 
     var response = await http.post(url,
         headers: {"Content-Type": "application/json", "token": "$token"},
@@ -412,7 +416,7 @@ class SnapPeNetworks {
     if (response.statusCode == 200) {
       SnapPeUI()
           .toastSuccess(successMessage: "your order placed successfully.");
-      CreateOrderModel orderModel = createOrderModelFromJson(response.body);
+      OrderSummaryModel orderModel = orderSummaryModelFromJson(response.body);
       return orderModel;
     } else {
       SnapPeUI()

@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:snap_pe_merchant/models/model_Consumer.dart';
-import 'package:snap_pe_merchant/models/model_create_order.dart';
-import 'package:snap_pe_merchant/models/model_customer.dart';
+import 'package:snap_pe_merchant/models/model_order_summary.dart';
 import 'package:snap_pe_merchant/models/model_orders.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/screens/order/orderWidget.dart';
@@ -47,9 +44,9 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   createAlertDialog() {
-    final phoneController = TextEditingController();
+    // final phoneController = TextEditingController();
     final serachController = TextEditingController();
-    phoneController.text = "9026744092"; //test
+    //phoneController.text = "9026744092"; //test
     return showDialog(
       context: context,
       builder: (context) {
@@ -57,80 +54,106 @@ class _OrderScreenState extends State<OrderScreen> {
           title: Text("Enter Customer Mobile / Whatsapp Number"),
           content: Column(
             children: [
-              TextField(
-                controller: phoneController,
-                autofocus: true,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefix: Text("+91 "),
-                    labelText: 'Mobile Number',
-                    hintText: 'Enter Mobile Number'),
-              ),
+              // TextField(
+              //   controller: phoneController,
+              //   autofocus: true,
+              //   keyboardType: TextInputType.phone,
+              //   maxLength: 10,
+              //   decoration: InputDecoration(
+              //       border: OutlineInputBorder(),
+              //       prefix: Text("+91 "),
+              //       labelText: 'Mobile Number',
+              //       hintText: 'Enter Mobile Number'),
+              // ),
               TypeAheadField(
+                getImmediateSuggestions: false,
               textFieldConfiguration: TextFieldConfiguration(
+                autofocus: true,
+
                   controller: serachController,
-                  decoration: InputDecoration(labelText: "Search Items")),
-              suggestionsCallback: (pattern) async =>
-                  await SnapPeNetworks().customerSuggestionsCallback(pattern),
-              itemBuilder: (context, CustomerModel customer) {
-                return ListTile(                 
+                  decoration: InputDecoration(labelText: "Search customer")),
+              suggestionsCallback: (pattern) async{
+                return await SnapPeNetworks().customerSuggestionsCallback(pattern);
+              },
+              itemBuilder: (context, OrderSummaryModel customer) {
+                return ListTile(                               
                   title: Text("${customer.customerName}"),
-                 
+                  subtitle: Text("${customer.customerNumber}"),
                 );
               },
-              onSuggestionSelected: (suggestion) {
-                print(suggestion);
+              onSuggestionSelected: (OrderSummaryModel customer) {
+                print(customer.customerNumber);
+                //var json = customerModelToJson(customer);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CartScreen(order: customer),
+                    ));
+
+                // consumer.firstName = consumer.firstName ?? "";
+                // consumer.middleName = consumer.middleName ?? "";
+                // consumer.lastName = consumer.lastName ?? "";
+                //
+                // order.customerName =
+                // "${consumer.firstName}  ${consumer.lastName}"; //${consumer.middleName}
+                // order.customerNumber = consumer.phoneNo;
+                // order.flatNo = consumer.houseNo;
+                // Navigator.pop(context);
+                // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                //   CartScreen();
+                // },));
+                // Navigator.pop(context);
+
+
               },
             ),
             ],
           ),
-          actions: [
-            MaterialButton(
-              child: Text("Next"),
-              onPressed: () async {
-                String phone = phoneController.text;
-                if (phone.length != 10) {
-                  Fluttertoast.showToast(
-                      msg: "Please Enter Valid Number.",
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.TOP,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                  return;
-                }
-                var result = await SnapPeNetworks().getConsumer(phone);
-                print(result);
-
-                ConsumerModel consumer = consumerModelFromJson(result);
-                CreateOrderModel order = createOrderModelFromJson(result);
-
-                consumer.firstName = consumer.firstName ?? "";
-                consumer.middleName = consumer.middleName ?? "";
-                consumer.lastName = consumer.lastName ?? "";
-
-                order.customerName =
-                    "${consumer.firstName}  ${consumer.lastName}"; //${consumer.middleName}
-                order.customerNumber = consumer.phoneNo;
-                order.flatNo = consumer.houseNo;
-
-                //Order order = orderFromJson(result);
-
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartScreen(
-                        order: order,
-                        consumer: consumer,
-                      ),
-                    ));
-              },
-            )
-          ],
+          // actions: [
+          //   MaterialButton(
+          //     child: Text("Next"),
+          //     onPressed: () async {
+          //       String phone = phoneController.text;
+          //       if (phone.length != 10) {
+          //         Fluttertoast.showToast(
+          //             msg: "Please Enter Valid Number.",
+          //             toastLength: Toast.LENGTH_LONG,
+          //             gravity: ToastGravity.TOP,
+          //             timeInSecForIosWeb: 1,
+          //             backgroundColor: Colors.red,
+          //             textColor: Colors.white,
+          //             fontSize: 16.0);
+          //         return;
+          //       }
+          //       var result = await SnapPeNetworks().getConsumer(phone);
+          //       print(result);
+          //
+          //       ConsumerModel consumer = consumerModelFromJson(result);
+          //       CreateOrderModel order = createOrderModelFromJson(result);
+          //
+          //       consumer.firstName = consumer.firstName ?? "";
+          //       consumer.middleName = consumer.middleName ?? "";
+          //       consumer.lastName = consumer.lastName ?? "";
+          //
+          //       order.customerName =
+          //           "${consumer.firstName}  ${consumer.lastName}"; //${consumer.middleName}
+          //       order.customerNumber = consumer.phoneNo;
+          //       order.flatNo = consumer.houseNo;
+          //
+          //       //Order order = orderFromJson(result);
+          //
+          //       Navigator.pop(context);
+          //       Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (context) => CartScreen(
+          //               order: order,
+          //               customer: consumer,
+          //             ),
+          //           ));
+          //     },
+          //   )
+          // ],
         );
       },
     );

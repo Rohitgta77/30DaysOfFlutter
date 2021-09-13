@@ -4,7 +4,7 @@ import 'package:snap_pe_merchant/constants/colorsConstants.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
-import 'package:sms_autofill/sms_autofill.dart';
+//import 'package:sms_autofill/sms_autofill.dart';
 
 class Otp extends StatefulWidget {
   final mobileNumber;
@@ -14,7 +14,8 @@ class Otp extends StatefulWidget {
   _OtpState createState() => _OtpState(mobileNumber);
 }
 
-class _OtpState extends State<Otp> with CodeAutoFill {
+class _OtpState extends State<Otp> {
+  //with CodeAutoFill
   String? appSignature;
   String? otpCode;
   String mobile = "";
@@ -24,7 +25,7 @@ class _OtpState extends State<Otp> with CodeAutoFill {
   }
 
   _btnResendOTP() async {
-    var signature = await SmsAutoFill().getAppSignature;
+    var signature = ""; //await SmsAutoFill().getAppSignature;
     print("AppSignature : $signature");
 
     if (await SnapPeNetworks().requestOTP(mobile, signature)) {
@@ -38,39 +39,39 @@ class _OtpState extends State<Otp> with CodeAutoFill {
     }
   }
 
-  @override
-  void codeUpdated() {
-    setState(() {
-      otpCode = code!;
-    });
-  }
+  // @override
+  // void codeUpdated() {
+  //   setState(() {
+  //     otpCode = code!;
+  //   });
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    listenForCode();
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   listenForCode();
 
-    SmsAutoFill().getAppSignature.then((signature) {
-      setState(() {
-        appSignature = signature;
-        print(appSignature);
-      });
-    });
-  }
+  //   SmsAutoFill().getAppSignature.then((signature) {
+  //     setState(() {
+  //       appSignature = signature;
+  //       print(appSignature);
+  //     });
+  //   });
+  // }
 
-  @override
-  void dispose() {
-    SmsAutoFill().unregisterListener();
-    super.dispose();
-    cancel();
-  }
+  // @override
+  // void dispose() {
+  //   SmsAutoFill().unregisterListener();
+  //   super.dispose();
+  //   cancel();
+  // }
 
   final _codeController = TextEditingController();
   _continueBtn() async {
     var otp = _codeController.text;
     print(otp);
     bool result = await SnapPeNetworks().verifyOTP(mobile, otp);
-    if (result) {      
+    if (result) {
       Navigator.pushNamedAndRemoveUntil(
           context, SnapPeRoutes.homeRoute, (route) => false);
     } else {
@@ -98,19 +99,19 @@ class _OtpState extends State<Otp> with CodeAutoFill {
                     const EdgeInsets.symmetric(vertical: 30, horizontal: 32),
                 child: Column(
                   children: [
-                    PinFieldAutoFill(
-                      controller: _codeController,
-                      decoration: UnderlineDecoration(
-                          colorBuilder: FixedColorBuilder(kPrimaryColor)),
-                      codeLength: 4,
-                      currentCode: code,
-                      onCodeSubmitted: (code) {},
-                      onCodeChanged: (code) {
-                        if (code!.length == 4) {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                        }
-                      },
-                    ),
+                    // PinFieldAutoFill(
+                    //   controller: _codeController,
+                    //   decoration: UnderlineDecoration(
+                    //       colorBuilder: FixedColorBuilder(kPrimaryColor)),
+                    //   codeLength: 4,
+                    //   currentCode: code,
+                    //   onCodeSubmitted: (code) {},
+                    //   onCodeChanged: (code) {
+                    //     if (code!.length == 4) {
+                    //       FocusScope.of(context).requestFocus(FocusNode());
+                    //     }
+                    //   },
+                    // ),
                     SizedBox(height: 30),
                     ElevatedButton(
                       style: ButtonStyle(

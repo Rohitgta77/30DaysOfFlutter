@@ -5,7 +5,7 @@ import 'package:snap_pe_merchant/constants/colorsConstants.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeRoutes.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
-import 'package:sms_autofill/sms_autofill.dart';
+//import 'package:sms_autofill/sms_autofill.dart';
 
 import 'otp.dart';
 
@@ -32,7 +32,7 @@ class _LogInWithPwdState extends State<LogInWithPwd> {
   }
 
   _btnSendOTP() async {
-    var signature = await SmsAutoFill().getAppSignature;
+    var signature = ""; //await SmsAutoFill().getAppSignature;
     print("AppSignature : $signature");
     final email = _emailController.text;
     if (await SnapPeNetworks().requestOTP(email, signature)) {

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:snap_pe_merchant/models/model_Consumer.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
-import 'package:snap_pe_merchant/models/model_create_order.dart';
+import 'package:snap_pe_merchant/models/model_order_summary.dart';
 import 'package:snap_pe_merchant/models/model_delivery_schedule.dart';
 import 'package:snap_pe_merchant/utils/snapPeNetworks.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
 
 class CartScreen extends StatefulWidget {
-  final CreateOrderModel order;
-  final ConsumerModel consumer;
-  const CartScreen({Key? key, required this.order, required this.consumer})
+  final OrderSummaryModel order;
+  const CartScreen({Key? key, required this.order})
       : super(key: key);
 
   @override
@@ -38,8 +36,13 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   fetchDelivery() async {
+    if(widget.order.community==null){
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. (Selected customer's Community null)");
+      return ;
+    }
     var result =
-        await SnapPeNetworks().getDeliveryTime(widget.consumer.communityName!);
+        await SnapPeNetworks().getDeliveryTime(widget.order.community!);
     print(result);
     if (result == "") {
       return;
@@ -215,7 +218,8 @@ class _CartScreenState extends State<CartScreen> {
                     widget.order.orderDetails = skuList;
                     // widget.order.applicationName = "DivigoRetail";
                     // widget.order.applicationNo = "919953423108";
-                    // widget.order.pinCode = 502032;
+                    //widget.order.pinCode = 502032;
+                    widget.order.status ="OK";
 
 
                     SnapPeNetworks().createNewOrder(widget.order);

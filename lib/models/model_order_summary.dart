@@ -6,14 +6,14 @@ import 'dart:convert';
 
 import 'model_catalogue.dart';
 
-CreateOrderModel createOrderModelFromJson(String str) =>
-    CreateOrderModel.fromJson(json.decode(str));
+OrderSummaryModel orderSummaryModelFromJson(String str) =>
+    OrderSummaryModel.fromJson(json.decode(str));
 
-String createOrderModelToJson(CreateOrderModel data) =>
+String orderSummaryModelToJson(OrderSummaryModel data) =>
     json.encode(data.toJson());
 
-class CreateOrderModel {
-  CreateOrderModel({
+class OrderSummaryModel {
+  OrderSummaryModel({
     this.status,
     this.messages,
     this.id,
@@ -97,8 +97,8 @@ class CreateOrderModel {
   bool? isPickup;
   String? merchantRemarks;
 
-  factory CreateOrderModel.fromJson(Map<String, dynamic> json) =>
-      CreateOrderModel(
+  factory OrderSummaryModel.fromJson(Map<String, dynamic> json) =>
+      OrderSummaryModel(
         status: json["status"],
         messages: List<String>.from(json["messages"].map((x) => x)),
         id: json["id"],

@@ -4,12 +4,36 @@
 
 import 'dart:convert';
 
-List<CustomerModel> customerModelFromJson(String str) => List<CustomerModel>.from(json.decode(str).map((x) => CustomerModel.fromJson(x)));
+CustomerModel customerModelFromJson(String str) => CustomerModel.fromJson(json.decode(str));
 
-String customerModelToJson(List<CustomerModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String customerModelToJson(CustomerModel data) => json.encode(data.toJson());
 
 class CustomerModel {
     CustomerModel({
+        this.customers,
+        this.pages,
+        this.totalRecords,
+    });
+
+    List<Customer>? customers;
+    int? pages;
+    int? totalRecords;
+
+    factory CustomerModel.fromJson(Map<String, dynamic> json) => CustomerModel(
+        customers: List<Customer>.from(json["customers"].map((x) => Customer.fromJson(x))),
+        pages: json["pages"],
+        totalRecords: json["totalRecords"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "customers": customers == null?[]: List<dynamic>.from(customers!.map((x) => x.toJson())),
+        "pages": pages,
+        "totalRecords": totalRecords,
+    };
+}
+
+class Customer {
+    Customer({
         this.pincode,
         this.city,
         this.addressLine1,
@@ -46,7 +70,7 @@ class CustomerModel {
     int? userId;
     int? relationId;
     String? mobileNumber;
-    String? emailAddress;
+    dynamic emailAddress;
     String? firstName;
     String? lastName;
     String? customerName;
@@ -63,7 +87,7 @@ class CustomerModel {
     dynamic gst;
     dynamic pan;
 
-    factory CustomerModel.fromJson(Map<String, dynamic> json) => CustomerModel(
+    factory Customer.fromJson(Map<String, dynamic> json) => Customer(
         pincode: json["pincode"],
         city: json["city"] == null ? null : json["city"],
         addressLine1: json["addressLine1"] == null ? null : json["addressLine1"],

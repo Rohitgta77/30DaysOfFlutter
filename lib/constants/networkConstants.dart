@@ -110,6 +110,8 @@ class NetworkConstants {
   static const String SnapPe_SERVICES_EP = Domain + "snappe-services/rest/v1/";
   static const String MERCHANTS_EP = SnapPe_SERVICES_EP + "merchants/";
 
+  static const String MERCHANTS_EP2 = Domain + "snappe-services/rest/v2/merchants/";
+
   static Uri loginURL = Uri.parse(SnapPe_SERVICES_EP + "login");
 
   static Uri getVerifyOtpURL =
@@ -190,10 +192,10 @@ class NetworkConstants {
 
 static Uri getCustomerSuggestion(String clientGroupName, String pattern) {
     String finalURL =
-        MERCHANTS_EP + clientGroupName + "/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC";
+        MERCHANTS_EP2 + clientGroupName + "/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC";
     return Uri.parse(finalURL);
 
-    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC
+    //https://qa.snap.pe/snappe-services/rest/v2/merchants/FoodForTravel/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC
   }
   
 
