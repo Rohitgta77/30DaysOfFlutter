@@ -110,7 +110,8 @@ class NetworkConstants {
   static const String SnapPe_SERVICES_EP = Domain + "snappe-services/rest/v1/";
   static const String MERCHANTS_EP = SnapPe_SERVICES_EP + "merchants/";
 
-  static const String MERCHANTS_EP2 = Domain + "snappe-services/rest/v2/merchants/";
+  static const String MERCHANTS_EP2 =
+      Domain + "snappe-services/rest/v2/merchants/";
 
   static Uri loginURL = Uri.parse(SnapPe_SERVICES_EP + "login");
 
@@ -135,6 +136,12 @@ class NetworkConstants {
     String finalURL = MERCHANTS_EP + clientGroupName + "/skus$query";
     return Uri.parse(finalURL);
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/RejoiceFresh/skus/30041
+  }
+
+  static Uri createNewCustomer(String clientGroupName) {
+    String finalURL = MERCHANTS_EP + clientGroupName + "/customers";
+    return Uri.parse(finalURL);
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/customers
   }
 
   static Uri getCategory(String clientGroupName) {
@@ -190,15 +197,14 @@ class NetworkConstants {
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/web/skus/t?mode=mobile
   }
 
-static Uri getCustomerSuggestion(String clientGroupName, String pattern) {
-    String finalURL =
-        MERCHANTS_EP2 + clientGroupName + "/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC";
+  static Uri getCustomerSuggestion(String clientGroupName, String pattern) {
+    String finalURL = MERCHANTS_EP2 +
+        clientGroupName +
+        "/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC";
     return Uri.parse(finalURL);
 
     //https://qa.snap.pe/snappe-services/rest/v2/merchants/FoodForTravel/query-customers/$pattern?page=0&size=10&sortBy=createdOn&sortOrder=DESC
   }
-  
-
 
   static Uri createNewOrder(String clientGroupName) {
     String finalURL = MERCHANTS_EP + clientGroupName + "/web/snappe-order";
@@ -214,6 +220,13 @@ static Uri getCustomerSuggestion(String clientGroupName, String pattern) {
     return Uri.parse(finalURL);
 
     //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/communities/AparnaCyberlife/deliver-options
+  }
+
+  static Uri getCommunity(String clientGroupName) {
+    String finalURL = MERCHANTS_EP + clientGroupName + "/communities";
+    return Uri.parse(finalURL);
+
+    //https://qa.snap.pe/snappe-services/rest/v1/merchants/FoodForTravel/communities
   }
 
   // static String GetUrl(UrlName urlName, String clientGroupName) {

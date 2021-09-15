@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:snap_pe_merchant/models/model_community.dart';
 import 'package:snap_pe_merchant/models/model_catalogue.dart';
+import 'package:snap_pe_merchant/models/model_consumer.dart';
 import 'package:snap_pe_merchant/models/model_order_summary.dart';
 import 'package:snap_pe_merchant/models/model_item.dart';
 import 'package:snap_pe_merchant/utils/snapPeUI.dart';
@@ -226,6 +228,35 @@ class SnapPeNetworks {
     }
   }
 
+  Future<bool> createNewCustomer(ConsumerModel consumer) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    if (clientGroupName == null) {
+      SnapPeUI().toastError();
+      return false;
+    }
+    Uri url = NetworkConstants.createNewCustomer(clientGroupName);
+    var resbody = json.encode(consumer);
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json", "token": "$token"},
+        body: resbody);
+
+    print('Request createNewCustomer: $url');
+    print('Response status: ${response.statusCode}');
+    print(' Body = $resbody');
+
+    if (response.statusCode == 200) {
+      SnapPeUI().toastSuccess(successMessage: "Custumer Added successfully.");
+      return true;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return false;
+    }
+  }
+
   Future getCategory() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var clientGroupName =
@@ -381,10 +412,10 @@ class SnapPeNetworks {
       print(response.body);
       var data = json.decode(response.body);
       var orderSummaryArray = data["orders"];
-      List<OrderSummaryModel> osList =List<OrderSummaryModel>.from(orderSummaryArray.map((x)=>OrderSummaryModel.fromJson(x))) ;
+      List<OrderSummaryModel> osList = List<OrderSummaryModel>.from(
+          orderSummaryArray.map((x) => OrderSummaryModel.fromJson(x)));
 
-
-      return osList.length == 0 ?[]:osList;
+      return osList.length == 0 ? [] : osList;
     } else {
       SnapPeUI()
           .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
@@ -447,6 +478,32 @@ class SnapPeNetworks {
       SnapPeUI()
           .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
       return "";
+    }
+  }
+
+  Future<List<Community>> getCommunity() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var clientGroupName =
+        preferences.getString(NetworkConstants.CLIENT_GROUP_NAME);
+    var token = preferences.getString(NetworkConstants.TOKEN);
+    Uri url = NetworkConstants.getCommunity(clientGroupName!);
+
+    var response = await http.get(url,
+        headers: {"Content-Type": "application/json", "token": "$token"});
+
+    print('Request getCommunity: $url');
+    print('Response status: ${response.statusCode}');
+    //print(' ${response.body}');
+    CommunityModel communityModel = communityModelFromJson(response.body);
+    if (response.statusCode == 200) {
+      print("success");
+      return communityModel.communities == null
+          ? []
+          : communityModel.communities!;
+    } else {
+      SnapPeUI()
+          .toastError(errorMessage: "SomeThing Wrong. ${response.statusCode}");
+      return [];
     }
   }
 }

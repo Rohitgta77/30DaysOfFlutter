@@ -194,7 +194,7 @@ class Sku {
             List<ImageC>.from(json["images"].map((x) => ImageC.fromJson(x))),
         displayName: json["displayName"],
         totalAmount: json["totalAmount"],
-        thirdPartySku: json["thirdPartySku"] ?? "0",
+        thirdPartySku: json["thirdPartySku"],
         discountPercent: json["discountPercent"].toDouble(),
         discountValue: json["discountValue"] ?? 0,
         gst: json["gst"] ?? 0,

@@ -40,6 +40,8 @@ class ConsumerModel {
         this.referredBy,
         this.parentCustomerId,
         this.addressType,
+        this.organizationName,
+        this.isValid
     });
 
     String? status;
@@ -72,6 +74,8 @@ class ConsumerModel {
     String? referredBy;
     dynamic parentCustomerId;
     String? addressType;
+    String? organizationName;
+    bool? isValid;
 
     factory ConsumerModel.fromJson(Map<String, dynamic> json) => ConsumerModel(
         status: json["status"],
@@ -104,6 +108,8 @@ class ConsumerModel {
         referredBy: json["referredBy"],
         parentCustomerId: json["parentCustomerId"],
         addressType: json["addressType"],
+        organizationName : json["organizationName"],
+        isValid:json["isValid"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -137,5 +143,7 @@ class ConsumerModel {
         "referredBy": referredBy,
         "parentCustomerId": parentCustomerId,
         "addressType": addressType,
+        "organizationName":organizationName,
+        "isValid":isValid
     };
 }
